@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ConnectionsStatus from "../components/connections/ConnectionsStatus";
 import CreateConnectionModal from "../components/connections/CreateConnectionModal";
 import PropTypes from "prop-types";
@@ -124,9 +124,33 @@ export default function Connections() {
 
   const [value, setValue] = useState(0);
 
+  // empty first index to prevent having to go back twice
+  const tabHashes = ["", "#add-connection", "#item-three"];
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    window.location.hash = tabHashes[newValue];
   };
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      const newValue = tabHashes.indexOf(hash);
+      if (newValue >= 0) {
+        setValue(newValue);
+      }
+    };
+
+    // Listen for hash changes
+    window.addEventListener("hashchange", handleHashChange);
+
+    // Set the initial tab based on the URL hash
+    handleHashChange();
+
+    // Cleanup listener on unmount
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, []);
 
   return (
     <div>
