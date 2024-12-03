@@ -8,9 +8,6 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 // import { DataGrid } from '@mui/x-data-grid';
 
-
-
-
 export default function LoRaDeviceTable({ devices, showLastSeen = true }) {
   return (
     <TableContainer
@@ -29,8 +26,7 @@ export default function LoRaDeviceTable({ devices, showLastSeen = true }) {
           <TableRow>
             <TableCell>Device Name</TableCell>
             <TableCell>Dev EUI</TableCell>
-            <TableCell>App EUI</TableCell>
-            <TableCell>App Key</TableCell>
+            <TableCell>Device Profile</TableCell>
             {showLastSeen && <TableCell> Last Seen</TableCell>}
           </TableRow>
         </TableHead>
@@ -44,9 +40,12 @@ export default function LoRaDeviceTable({ devices, showLastSeen = true }) {
                 {device.name}
               </TableCell>
               <TableCell>{device.dev_eui}</TableCell>
-              <TableCell>{device.app_eui}</TableCell>
-              <TableCell>{device.app_key}</TableCell>
-              {showLastSeen && <TableCell>{device.last_seen}</TableCell>}
+              <TableCell>{device.deviceType}</TableCell>
+              {showLastSeen && (
+                <TableCell>
+                  {device.last_seen ? device.last_seen : "Never"}
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>
