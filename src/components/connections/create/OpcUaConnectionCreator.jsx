@@ -41,9 +41,8 @@ export default function OpcUaConnectionCreator() {
       clientCertificate,
       clientKey,
       serverCertificate,
-        securityMode,
-        securityPolicy,
-        
+      securityMode,
+      securityPolicy,
     };
 
     console.log("Form Data:", formData);
