@@ -29,8 +29,8 @@ const routes = [
     element: <ConnectionCreatorRoot connectionType={"Modbus"} />,
   },
   {
-    path: "/connections/add/plc/logix",
-    element: <ConnectionCreatorRoot connectionType={"Logix PLC"} />,
+    path: "/connections/add/plc",
+    element: <ConnectionCreatorRoot connectionType={"PLC"} />,
   },
 ];
 

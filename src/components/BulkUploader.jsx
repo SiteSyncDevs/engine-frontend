@@ -1,16 +1,19 @@
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 import { Button, Box, Paper } from "@mui/material";
 import LoRaDeviceTable from "./LoRaDeviceTable";
-import { FileUploader } from "react-drag-drop-files";
-
+import FileUpload from "./form/FileUpload";
 const fileTypes = ["CSV"];
+import ApiHandler from "../api/ApiHandler";
+import { Api } from "@mui/icons-material";
+import Dropdown from "./form/Dropdown";
 
 export default function BulkUploader() {
   const [devices, setDevices] = useState([]);
+  const [selectedDeviceProfile, setSelectedDeviceProfile] = useState(null);
   const [filename, setFilename] = useState("");
   const [file, setFile] = useState(null);
-
+  const [deviceProfiles, setDeviceProfiles] = useState([]);
   const handleDrop = (event) => {
     event.preventDefault();
     if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
@@ -19,105 +22,109 @@ export default function BulkUploader() {
     }
   };
 
-  //   const handleFileUpload = (uploadedFile) => {
-  //     setFile(uploadedFile);
-  //     console.log("Uploaded File:", uploadedFile);
-  //   };
-  const handleDragOver = (event) => {
-    event.preventDefault();
-  };
+  useEffect(() => {
+    const fetchDeviceProfiles = async () => {
+      try {
+        const deviceProfilesRes = await ApiHandler.get(
+          "/routers/v1/device-profile"
+        );
+        const transformedProfiles = deviceProfilesRes.map((profile) => ({
+          value: profile.id,
+          label: profile.name,
+        }));
 
-  const handleInputChange = (event) => {
-    if (event.target.files && event.target.files.length > 0) {
-      handleFileUpload(event.target.files[0]);
-    }
-  };
+        setDeviceProfiles(transformedProfiles);
+        console.log("Device Profiles:", transformedProfiles);
+      } catch (error) {
+        console.error("Failed to fetch device profiles:", error);
+      }
+    };
 
-  const handleFileInputChange = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      handleFileUpload(e.target.files[0]);
-    }
-  };
+    fetchDeviceProfiles();
+  }, []);
+  // const handleFileUpload = (uploadedFile) => {
+  //   setFile(uploadedFile);
+  //   console.log("Uploaded File:", uploadedFile);
+  // };
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = (name, fileContents) => {
     console.log("file");
-    if (!e.target.files) {
-      return;
-    }
-    const file = e.target.files[0];
-    const { name } = file;
+
     setFilename(name);
 
     const reader = new FileReader();
-    reader.onload = (evt) => {
-      if (!evt?.target?.result) {
-        return;
-      }
-      const { result } = evt.target;
-      const records = parseCSV(result);
-      setDevices(records);
-    };
-    reader.readAsText(file);
+
+    const records = parseRawCSV(fileContents);
+    setDevices(records);
   };
 
-  const parseCSV = (csvString) => {
-    const lines = csvString.split("\n").map((line) => line.trim());
-    const header = lines
-      .shift()
-      ?.split(",")
-      .map((h) => h.trim());
-    if (
-      !header ||
-      !header.includes("dev_eui") ||
-      !header.includes("join_eui") ||
-      !header.includes("app_key") ||
-      !header.includes("local_name")
-    ) {
-      console.error(
-        "Invalid CSV headers. Expected: dev_eui, join_eui, app_key, local_name"
-      );
-      return [];
-    }
+  const parseRawCSV = (csvString) => {
+    try {
+      const lines = csvString.split("\n").map((line) => line.trim());
 
-    return lines
-      .filter((line) => line) // Skip empty lines
-      .map((line) => {
-        const values = line.split(",").map((value) => value.trim());
-        const record = {};
-        header.forEach((key, index) => {
-          record[key] = values[index];
+      const header = lines
+        .shift()
+        ?.split(",")
+        .map((h) => h.trim());
+
+      if (!header) {
+        throw new Error("CSV file is empty or has no header.");
+      }
+
+      // Check for required fields
+      const requiredFields = ["dev_eui", "join_eui", "app_key", "local_name"];
+      const missingFields = requiredFields.filter(
+        (field) => !header.includes(field)
+      );
+      if (missingFields.length > 0) {
+        throw new Error(
+          `Invalid CSV headers. Missing required fields: ${missingFields.join(
+            ", "
+          )}`
+        );
+      }
+
+      // Map rows to objects
+      const records = lines
+        .filter((line) => line) // Skip empty lines
+        .map((line) => {
+          const values = line.split(",").map((value) => value.trim());
+          const record = {};
+          header.forEach((key, index) => {
+            record[key] = values[index] || null; // Handle missing values
+          });
+
+          return {
+            name: record["local_name"] || "Unknown Device",
+            dev_eui: record["dev_eui"],
+            app_eui: record["join_eui"],
+            app_key: record["app_key"],
+          };
         });
 
-        return {
-          name: record["local_name"] || "Unknown Device",
-          dev_eui: record["dev_eui"],
-          app_eui: record["join_eui"],
-          app_key: record["app_key"],
-        };
-      });
+      return records;
+    } catch (error) {
+      console.error("Error parsing CSV:", error.message);
+      return [];
+    }
   };
 
   return (
     <div>
-      <Button
-        component="label"
-        variant="outlined"
-        startIcon={<UploadFileIcon />}
-        sx={{ marginRight: "1rem" }}
-      >
-        Upload CSV
-        <input type="file" accept=".csv" hidden onChange={handleFileUpload} />
-      </Button>
+      <FileUpload label="Upload CSV template" onFileUpload={handleFileUpload} />
 
-      
+      {devices.length > 0 && (
+        <div>
+          {/* <pre>{JSON.stringify(devices, null, 2)}</pre> */}
+          {devices && (
+            <>
+              <LoRaDeviceTable devices={devices} showLastSeen={false} showDeviceProfile={false} showJoinJeys={true}/>
 
-        {devices.length > 0 && (
-          <div>
-            <h2>Uploaded Devices:</h2>
-            {/* <pre>{JSON.stringify(devices, null, 2)}</pre> */}
-            <LoRaDeviceTable devices={devices} showLastSeen={false} />
-          </div>
-        )}
-      </div>
+              <Dropdown options={deviceProfiles} topLabel="Select device profile" value={selectedDeviceProfile} onChange={(value) => setSelectedDeviceProfile(value)}/>
+            </>
+          )}
+        </div>
+      )}
+    </div>
   );
 }

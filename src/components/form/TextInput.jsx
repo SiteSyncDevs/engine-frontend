@@ -23,7 +23,7 @@ const TextInput = ({
 
   return (
     <div className="mt-2">
-      <h1>{label}</h1>
+      <h1 className="mb-1">{label}</h1>
       
       <TextField
         // label={label}

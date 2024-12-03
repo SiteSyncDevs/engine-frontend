@@ -8,7 +8,8 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 // import { DataGrid } from '@mui/x-data-grid';
 
-export default function LoRaDeviceTable({ devices, showLastSeen = true }) {
+export default function LoRaDeviceTable({ devices, showLastSeen = true, showJoinJeys=false, showDeviceProfile=true }) {
+  console.log("Devices:", devices);
   return (
     <TableContainer
       component={Paper}
@@ -26,8 +27,12 @@ export default function LoRaDeviceTable({ devices, showLastSeen = true }) {
           <TableRow>
             <TableCell>Device Name</TableCell>
             <TableCell>Dev EUI</TableCell>
-            <TableCell>Device Profile</TableCell>
+            {showJoinJeys && <TableCell> Join EUI</TableCell>}
+            {showJoinJeys && <TableCell> App Key</TableCell>}
+            {showDeviceProfile && <TableCell>Device Type</TableCell>}
             {showLastSeen && <TableCell> Last Seen</TableCell>}
+
+
           </TableRow>
         </TableHead>
         <TableBody>
@@ -40,6 +45,8 @@ export default function LoRaDeviceTable({ devices, showLastSeen = true }) {
                 {device.name}
               </TableCell>
               <TableCell>{device.dev_eui}</TableCell>
+              {showJoinJeys && <TableCell>{device.app_eui}</TableCell>}
+              {showJoinJeys && <TableCell>{device.app_key}</TableCell>}
               <TableCell>{device.deviceType}</TableCell>
               {showLastSeen && (
                 <TableCell>

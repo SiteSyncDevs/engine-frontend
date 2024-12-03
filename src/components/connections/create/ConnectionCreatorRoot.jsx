@@ -12,7 +12,7 @@ export default function ConnectionCreatorRoot({connectionType}) {
     <div>
         {connectionType === "MQTT" && <MqttConnection />}
         {connectionType === "OPC-UA" && <OpcUaConnectionCreator />}
-        {connectionType === "Logix PLC" && <LogixPlcConnection />}
+        {connectionType === "PLC" && <LogixPlcConnection />}
         {connectionType === "Sparkplug-B" && <SparkplugBConnectionCreator />}
         {connectionType === "Modbus" && <ModbusConnection />}
     </div>

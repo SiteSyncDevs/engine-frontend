@@ -154,8 +154,7 @@ export default function Connections() {
 
   return (
     <div>
-      <h1>Connections</h1>
-      <CreateConnectionModal />
+ 
 
       {/* <ConnectionsStatus connections={connections} /> */}
       <Box sx={{ width: "100%" }}>

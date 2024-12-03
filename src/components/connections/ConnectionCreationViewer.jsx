@@ -23,7 +23,7 @@ const connectionTypes = [
     id: 7,
     name: "Logix PLC",
     desc: "The Logix PLC connection forwards events to a Logix PLC",
-    route: "/connections/add/plc/logix-plc",
+    route: "/connections/add/plc",
   },
   {
     id: 8,
