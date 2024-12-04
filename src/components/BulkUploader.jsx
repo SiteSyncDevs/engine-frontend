@@ -14,6 +14,18 @@ export default function BulkUploader() {
   const [filename, setFilename] = useState("");
   const [file, setFile] = useState(null);
   const [deviceProfiles, setDeviceProfiles] = useState([]);
+
+  const handleSubmit = () => {
+    const formData = {
+      devices,
+      selectedDeviceProfile,
+    };
+
+    console.log("Form Data:", formData);
+
+    // You can now send this `formData` object to an API or handle it as needed
+  };
+
   const handleDrop = (event) => {
     event.preventDefault();
     if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
@@ -112,15 +124,37 @@ export default function BulkUploader() {
   return (
     <div>
       <FileUpload label="Upload CSV template" onFileUpload={handleFileUpload} />
-
+      <br />
       {devices.length > 0 && (
         <div>
           {/* <pre>{JSON.stringify(devices, null, 2)}</pre> */}
           {devices && (
             <>
-              <LoRaDeviceTable devices={devices} showLastSeen={false} showDeviceProfile={false} showJoinJeys={true}/>
+              <LoRaDeviceTable
+                devices={devices}
+                showLastSeen={false}
+                showDeviceProfile={false}
+                showJoinJeys={true}
+              />
+              <br />
 
-              <Dropdown options={deviceProfiles} topLabel="Select device profile" value={selectedDeviceProfile} onChange={(value) => setSelectedDeviceProfile(value)}/>
+              <Dropdown
+                options={deviceProfiles}
+                topLabel="Select device profile for upload:"
+                value={selectedDeviceProfile}
+                onChange={(value) => setSelectedDeviceProfile(value)}
+              />
+
+              {selectedDeviceProfile && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSubmit}
+                  sx={{ marginTop: 3 }}
+                >
+                  Submit
+                </Button>
+              )}
             </>
           )}
         </div>

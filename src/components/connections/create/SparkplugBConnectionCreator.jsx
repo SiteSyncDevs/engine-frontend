@@ -17,6 +17,7 @@ export default function SparkplugBConnectionCreator() {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [showSparkplugSettings, setShowSparkplugSettings] = useState(false);
   const [useAuthentication, setUseAuthentication] = useState(false);
+
   const [friendlyName, setFriendlyName] = useState("");
   const [brokerHostname, setBrokerHostname] = useState("");
   const [brokerPort, setBrokerPort] = useState("");
@@ -37,7 +38,7 @@ export default function SparkplugBConnectionCreator() {
       username: useAuthentication ? username : null,
       password: useAuthentication ? password : null,
       sparkplugGroupId,
-      sparkplugNodeId,   
+      sparkplugNodeId,
       clientCertificate,
       clientKey,
       serverCertificate,

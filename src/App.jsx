@@ -42,12 +42,6 @@ function App() {
 
           {/* Main Content */}
           <div style={{ flex: 1, padding: "20px" }}>
-            {/* <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/device/manage" element={<DeviceManagement />} />
-              <Route path="/connections" element={<Connections />} />
-              <Route path="/device/create" element={<CreateDevice />} />
-            </Routes> */}
             <AppRoutes />
           </div>
         </div>

@@ -1,4 +1,5 @@
-import * as React from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -6,10 +7,19 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-// import { DataGrid } from '@mui/x-data-grid';
 
-export default function LoRaDeviceTable({ devices, showLastSeen = true, showJoinJeys=false, showDeviceProfile=true }) {
-  console.log("Devices:", devices);
+export default function LoRaDeviceTable({
+  devices,
+  showLastSeen = true,
+  showJoinJeys = false,
+  showDeviceProfile = true,
+}) {
+  const navigate = useNavigate();
+
+  const handleRowClick = (devEUI) => {
+    navigate(`/device/manage/${devEUI}`);
+  };
+
   return (
     <TableContainer
       component={Paper}
@@ -27,19 +37,21 @@ export default function LoRaDeviceTable({ devices, showLastSeen = true, showJoin
           <TableRow>
             <TableCell>Device Name</TableCell>
             <TableCell>Dev EUI</TableCell>
-            {showJoinJeys && <TableCell> Join EUI</TableCell>}
-            {showJoinJeys && <TableCell> App Key</TableCell>}
+            {showJoinJeys && <TableCell>Join EUI</TableCell>}
+            {showJoinJeys && <TableCell>App Key</TableCell>}
             {showDeviceProfile && <TableCell>Device Type</TableCell>}
-            {showLastSeen && <TableCell> Last Seen</TableCell>}
-
-
+            {showLastSeen && <TableCell>Last Seen</TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
           {devices.map((device) => (
             <TableRow
               key={device.id}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              sx={{
+                "&:last-child td, &:last-child th": { border: 0 },
+                cursor: "pointer", // Add pointer cursor to indicate clickable rows
+              }}
+              onClick={() => handleRowClick(device.dev_eui)} // Navigate on row click
             >
               <TableCell component="th" scope="row">
                 {device.name}
@@ -47,7 +59,7 @@ export default function LoRaDeviceTable({ devices, showLastSeen = true, showJoin
               <TableCell>{device.dev_eui}</TableCell>
               {showJoinJeys && <TableCell>{device.app_eui}</TableCell>}
               {showJoinJeys && <TableCell>{device.app_key}</TableCell>}
-              <TableCell>{device.deviceType}</TableCell>
+              {showDeviceProfile && <TableCell>{device.deviceType}</TableCell>}
               {showLastSeen && (
                 <TableCell>
                   {device.last_seen ? device.last_seen : "Never"}

@@ -2,201 +2,8 @@ import { Api } from "@mui/icons-material";
 import LoRaDeviceTable from "../components/LoRaDeviceTable";
 import ApiHandler from "../api/ApiHandler";
 import { useState, useEffect } from "react";
-const devices = [
-  {
-    id: 1,
-    name: "LoRa Device 1",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 2,
-    name: "LoRa Device 2",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 3,
-    name: "LoRa Device 3",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 4,
-    name: "LoRa Device 4",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 5,
-    name: "LoRa Device 5",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 6,
-    name: "LoRa Device 6",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-  {
-    id: 7,
-    name: "LoRa Device 7",
-    dev_eui: "1234567812345678",
-    app_eui: "1234567812345678",
-    app_key: "12345678123456781234567812345678",
-    last_seen: "2024-11-01 17:32:21",
-  },
-];
-
+import CustomButton from "../components/form/CustomButton";
+import FileUpload from "../components/form/FileUpload";
 // const apiDevices = ApiHandler.get("/routers/v1/device").then((data) => {
 //   console.log("Data:", data);
 // }
@@ -204,6 +11,9 @@ const devices = [
 export default function DeviceManagement() {
   const [apiDevices, setApiDevices] = useState([]);
 
+  const handleSubmit = () => {
+    console.log("Submit button clicked");
+  };
   // Fetch devices when the component mounts
   useEffect(() => {
     const fetchDevices = async () => {
@@ -220,8 +30,19 @@ export default function DeviceManagement() {
   }, []); // Empty dependency array ensures this runs only once
   return (
     <div>
-      <h1>Devices</h1>
+      
       <LoRaDeviceTable devices={apiDevices} />
+
+      {/* <CustomButton handleSubmit={handleSubmit} label="Submit" /> */}
+
+      <div className="flex flex-row gap-12  w-1/3 mt-4">
+        <CustomButton
+          handleSubmit={handleSubmit}
+          label="Export Configurations"
+          hoverText="Export all device configurations"
+        />
+        <FileUpload label="Upload configuration" hoverText="Upload new system configuration"/>
+      </div>
     </div>
   );
 }

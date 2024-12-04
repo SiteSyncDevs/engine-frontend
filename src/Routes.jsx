@@ -4,6 +4,8 @@ import DeviceManagement from "./pages/Devices";
 import CreateDevice from "./pages/CreateDevice";
 import Connections from "./pages/Connections";
 import ConnectionCreatorRoot from "./components/connections/create/ConnectionCreatorRoot";
+import DeviceDetail from "./pages/DeviceDetail";
+
 const routes = [
   { path: "/", element: <Dashboard />, name: "Dashboard" },
   {
@@ -31,6 +33,10 @@ const routes = [
   {
     path: "/connections/add/plc",
     element: <ConnectionCreatorRoot connectionType={"PLC"} />,
+  },
+  {
+    path: "/device/manage/:deviceId",
+    element: <DeviceDetail />,
   },
 ];
 

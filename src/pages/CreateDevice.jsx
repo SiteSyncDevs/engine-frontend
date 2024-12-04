@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
+import CreateDeviceForm from "../components/device/DeviceCreationForm";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -166,7 +167,7 @@ export default function CreateDevice() {
           <h2>Device Profile: {deviceProfile}</h2>{" "}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
-          Item Three
+          <CreateDeviceForm />
         </CustomTabPanel>
       </Box>
 

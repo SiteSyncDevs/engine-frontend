@@ -5,7 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-export default function Dropdown({ options, label, value, onChange, showTopLabel=false, topLabel }) {
+export default function Dropdown({ options, label, value, onChange, showTopLabel=false, topLabel, maxWidth = 300 }) {
   const handleChange = (event) => {
     if (onChange) {
       onChange(event.target.value);
@@ -13,7 +13,7 @@ export default function Dropdown({ options, label, value, onChange, showTopLabel
   };
 
   return (
-    <Box sx={{ minWidth: 120, maxWidth: 300 }}>
+    <Box sx={{ minWidth: 120, maxWidth: maxWidth }}>
         { topLabel && <h1 className="mb-1">{topLabel}</h1>}
       <FormControl fullWidth>
         <InputLabel id={`${label}-select-label`}>{label}</InputLabel>
@@ -23,6 +23,7 @@ export default function Dropdown({ options, label, value, onChange, showTopLabel
           value={value || ""}
           label={label}
           onChange={handleChange}
+          sx={{}}
         >
           {options.map((option) => (
             <MenuItem key={option.value} value={option.value}>
