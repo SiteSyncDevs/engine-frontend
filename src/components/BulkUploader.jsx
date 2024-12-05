@@ -84,7 +84,7 @@ export default function BulkUploader() {
       }
 
       // Check for required fields
-      const requiredFields = ["dev_eui", "join_eui", "app_key", "local_name"];
+      const requiredFields = ["dev_eui", "join_eui", "app_key", "name"];
       const missingFields = requiredFields.filter(
         (field) => !header.includes(field)
       );
@@ -107,7 +107,7 @@ export default function BulkUploader() {
           });
 
           return {
-            name: record["local_name"] || "Unknown Device",
+            name: record["name"] || "Unknown Device",
             dev_eui: record["dev_eui"],
             app_eui: record["join_eui"],
             app_key: record["app_key"],
