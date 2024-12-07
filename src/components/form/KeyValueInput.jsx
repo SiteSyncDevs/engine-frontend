@@ -2,9 +2,17 @@ import React, { useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import ApiHandler from "../../api/ApiHandler";
-
+import { useEffect } from "react";
 export default function KeyValueInput({device}) {
   const [tags, setTags] = useState([{ decoded_attribute: "", destination_path: "", dev_eui: device.dev_eui }]);
+ 
+ 
+
+  useEffect(() => {
+    if (device.mappings) {
+      setTags(device.mappings);
+    }
+  }, [device.mappings]);
 
   const handleAddTag = () => {
     setTags([...tags, { decoded_attribute: "", destination_path: "", dev_eui: device.dev_eui }]);

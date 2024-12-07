@@ -36,7 +36,8 @@ const routes = [
   },
   {
     path: "/device/manage/:deviceId",
-    element: <DeviceDetail />,
+    element: <DeviceDetail  />,
+
   },
 ];
 

@@ -1,20 +1,22 @@
 import { useParams } from "react-router-dom";
 import DeviceDashboard from "../components/device/DeviceDashboard";
 import * as React from "react";
+import { useState, useEffect } from "react";
+import ApiHandler from "../api/ApiHandler";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import KeyValueInput from "../components/form/KeyValueInput";
 import CreateDeviceForm from "../components/device/DeviceCreationForm";
-const device = {
-  id: 0,
-  name: "EnersysVoltTemp-0100",
-  deviceType: "EnersysVoltTemp",
-  description: "this is a description of a device",
-  last_seen: "Today",
-  dev_eui: "00018d5c5c8d0100",
-};
+// const device = {
+//   id: 0,
+//   name: "EnersysVoltTemp-0100",
+//   deviceType: "EnersysVoltTemp",
+//   description: "this is a description of a device",
+//   last_seen: "Today",
+//   dev_eui: "00018d5c5c8d0100",
+// };
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -47,10 +49,29 @@ function a11yProps(index) {
 
 export default function DeviceDetail() {
   const [value, setValue] = React.useState(0);
-
+  const { deviceId } = useParams();
+  const [device, setDevice] = React.useState([]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+
+
+    // Fetch devices when the component mounts
+    useEffect(() => {
+      const fetchDevices = async () => {
+        try {
+         
+          const data = await ApiHandler.get( `/routers/v1/device/${deviceId}`);
+          console.log("Data:", data);
+          setDevice(data);
+        } catch (error) {
+          console.error("Error fetching devices:", error);
+        }
+      };
+  
+      fetchDevices();
+    }, []); // Empty dependency array ensures this runs only once
 
   return (
     <Box sx={{ width: "100%" }}>
