@@ -5,6 +5,7 @@ import ApiHandler from "../../api/ApiHandler";
 import { useEffect } from "react";
 export default function KeyValueInput({device}) {
   const [tags, setTags] = useState([{ decoded_attribute: "", destination_path: "", dev_eui: device.dev_eui }]);
+  const [attributes, setAttributes] = useState([]);
  
  
 
@@ -13,6 +14,15 @@ export default function KeyValueInput({device}) {
       setTags(device.mappings);
     }
   }, [device.mappings]);
+
+  useEffect(() => {
+    const fetchAttributes = async () => {
+      const data = await ApiHandler.get(`/routers/v1/${device.device_profile_id}/variables`);
+      setAttributes(data);
+    }
+    fetchAttributes();
+  }, []);
+
 
   const handleAddTag = () => {
     setTags([...tags, { decoded_attribute: "", destination_path: "", dev_eui: device.dev_eui }]);
@@ -36,7 +46,7 @@ export default function KeyValueInput({device}) {
   };
 
   const handleDownloadCSV = () => {
-    const headers = "Key,Value\n";
+    const headers = "Source,Destination\n";
     const rows = tags.map((tag) => `${tag.decoded_attribute},${tag.destination_path}`).join("\n");
     const csvContent = headers + rows;
 
@@ -45,7 +55,7 @@ export default function KeyValueInput({device}) {
 
     const link = document.createElement("a");
     link.href = url;
-    link.download = "key-value-mappings.csv";
+    link.download = `${device.dev_eui}-mappings.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
