@@ -15,13 +15,43 @@ export default function BulkUploader(deviceProfiles) {
   const [file, setFile] = useState(null);
   // const [deviceProfiles, setDeviceProfiles] = useState([]);
 
-  const handleSubmit = () => {
-    const formData = {
-      devices,
-      selectedDeviceProfile,
-    };
+  const handleDownloadCSV = () => {
+    const headers = "dev_eui,join_eui,app_key,name,description\n";
+    const rows = {};
+    const csvContent = headers;
 
-    console.log("Form Data:", formData);
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `SiteSync-upload-template.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleSubmit = () => {
+
+    devices.forEach(async (device) => {
+      try {
+        console.log("Device:", device);
+        device.deviceProfileId = selectedDeviceProfile;
+        const response = await ApiHandler.post("/routers/v1/device", {
+          device,
+          deviceProfileId: selectedDeviceProfile.value,
+        });
+        console.log("Device uploaded successfully:", response);
+      } catch (error) {
+        console.error("Failed to upload device:", device, error);
+      }
+    });
+    // const formData = {
+    //   devices,
+    //   selectedDeviceProfile,
+    // };
+
+    // console.log("Form Data:", formData);
 
     // You can now send this `formData` object to an API or handle it as needed
   };
@@ -125,6 +155,12 @@ export default function BulkUploader(deviceProfiles) {
     <div>
       <FileUpload label="Upload CSV template" onFileUpload={handleFileUpload} />
       <br />
+      <button
+          onClick={handleDownloadCSV}
+          className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-md"
+        >
+          Download Upload Template
+        </button>
       {devices.length > 0 && (
         <div>
           {/* <pre>{JSON.stringify(devices, null, 2)}</pre> */}

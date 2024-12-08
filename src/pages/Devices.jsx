@@ -11,8 +11,35 @@ import FileUpload from "../components/form/FileUpload";
 export default function DeviceManagement() {
   const [apiDevices, setApiDevices] = useState([]);
 
-  const handleSubmit = () => {
-    console.log("Submit button clicked");
+  const handleSubmit = async () => {
+    try {
+      const data = await ApiHandler.get("/routers/v1/device/mappings");
+      console.log("Data:", data);
+      //{
+    //     "dev_eui": d['dev_eui'],
+    //     "name":d['name'],
+    //     "device_type":device["deviceType"],
+    //     "attribute":t,
+    //     "mapping":v
+
+    // }
+      const headers = "DevEUI,DeviceName,Source,Destination\n";
+      const rows = data.map((tag) => `${tag.dev_eui},${tag.name},${tag.attribute},${tag.mapping}`).join("\n");
+      const csvContent = headers + rows;
+      const blob = new Blob([csvContent], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `SiteSyncDeviceMapping.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setApiDevices(data);
+    } catch (error) {
+      console.error("Error fetching devices:", error);
+    }
+    
   };
   // Fetch devices when the component mounts
   useEffect(() => {

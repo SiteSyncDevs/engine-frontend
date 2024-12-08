@@ -5,7 +5,7 @@ import TextInput from "../form/TextInput";
 import Dropdown from "../form/Dropdown";
 import ApiHandler from "../../api/ApiHandler";
 export default function DeviceCreationForm(device, deviceProfiles) {
-
+ console.log(deviceProfiles.length);
   const [selectedDeviceProfile, setSelectedDeviceProfile] = useState(null);
 
 
@@ -101,13 +101,17 @@ export default function DeviceCreationForm(device, deviceProfiles) {
           fullWidth={true}
         />
         <div className="mt-4" />
-        {/* <Dropdown
+        
+        {deviceProfiles.length === undefined ? (
+          <div className="text-red-500">No device profiles available</div>
+        ) : <Dropdown
           options={deviceProfiles}
           topLabel="Device Profile"
           value={selectedDeviceProfile}
           onChange={(value) => setSelectedDeviceProfile(value)}
           maxWidth={525}
-        /> */}
+        /> }
+        
       </div>
       <CustomButton onClick={handleSubmit} label="Create Device" />
     </div>
