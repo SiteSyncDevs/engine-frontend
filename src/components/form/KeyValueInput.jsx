@@ -3,6 +3,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import ApiHandler from "../../api/ApiHandler";
 import { useEffect } from "react";
+import Dropdown from "../form/Dropdown";
 export default function KeyValueInput({device}) {
   const [tags, setTags] = useState([{ decoded_attribute: "", destination_path: "", dev_eui: device.dev_eui }]);
   const [attributes, setAttributes] = useState([]);
@@ -17,7 +18,7 @@ export default function KeyValueInput({device}) {
 
   useEffect(() => {
     const fetchAttributes = async () => {
-      const data = await ApiHandler.get(`/routers/v1/${device.device_profile_id}/variables`);
+      const data = await ApiHandler.get(`/routers/v1/device-profile/${device.device_profile_id}/variables`);
       setAttributes(data);
     }
     fetchAttributes();
@@ -41,8 +42,13 @@ export default function KeyValueInput({device}) {
   };
 
   const handleSubmit = () => {
-    ApiHandler.post("/routers/v1/device/mappings/" + device.dev_eui, tags);
     console.log("Tags:", tags);
+    ApiHandler.post("/routers/v1/device/mappings/" + device.dev_eui, tags).then(response => {
+      console.log("Response:", response);
+    }).catch(error => {
+      console.error("Error:", error);
+    });
+
   };
 
   const handleDownloadCSV = () => {
@@ -85,13 +91,22 @@ export default function KeyValueInput({device}) {
           key={index}
           className="flex flex-row gap-3 mb-2 w-1/2 items-center"
         >
-          <input
+           <Dropdown
+          options={attributes}
+          topLabel=""
+          value={tag.decoded_attribute}
+          onChange={(value) => handleInputChange(index, "decoded_attribute", value)}
+          maxWidth={525}
+        />
+
+          {/* <input
             type="text"
             className="border border-gray-300 rounded-md w-1/2 p-2"
             placeholder="Key"
             value={tag.decoded_attribute}
+            {(value) => setSelectedDeviceProfile(value)}
             onChange={(e) => handleInputChange(index, "decoded_attribute", e.target.value)}
-          />
+          /> */}
           <input
             type="text"
             className="border border-gray-300 rounded-md w-1/2 p-2"
