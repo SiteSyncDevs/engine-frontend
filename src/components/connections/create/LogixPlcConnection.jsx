@@ -1,6 +1,8 @@
 import { useState } from "react";
 import TextInput from "../../form/TextInput";
 import FileUpload from "../../form/FileUpload";
+import { useEffect } from "react";
+  import ApiHandler from "../../../api/ApiHandler";
 import {
   Box,
   Typography,
@@ -21,19 +23,48 @@ export default function LogixPlcConnection() {
   const [plcModel, setPlcModel] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  //const [plcOptions, setPlcOptions] = useState([]);
 
+
+  
+
+  // useEffect(() => {
+  //   const fetchPlcOptions = async () => {
+  //     try {
+  //       const response = await ApiHandler.get("/routers/v1/connections/PLC/options");
+  //       setPlcOptions(response.data);
+  //     } catch (error) {
+  //       console.error("Failed to fetch PLC options:", error);
+  //     }
+  //   };
+
+  //   fetchPlcOptions();
+  // }, []);
   const plcOptions = [
     { value: "Logix", label: "Logix" }
   ];
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+
+
     const formData = {
-      friendlyName,
-      plc_ip,
-      plc_port,
+      id: 0,
+      connectionName: friendlyName,
+      ipaddress: plc_ip,
+      port: plc_port,
       useAuthentication,
       username: useAuthentication ? username : null,
       password: useAuthentication ? password : null,
     };
+
+    try {
+          const response = await ApiHandler.post("/routers/v1/connections", {
+            formData
+      });
+      console.log("Connection created successfully:", response);
+      //then navigate to status page
+    } catch (error) {
+      console.error("Failed to create connection device:",formData, error);
+    }
 
     console.log("Form Data:", formData);
 
