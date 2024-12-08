@@ -35,7 +35,6 @@ export default function DeviceManagement() {
       link.click();
       document.body.removeChild(link);
 
-      setApiDevices(data);
     } catch (error) {
       console.error("Error fetching devices:", error);
     }
