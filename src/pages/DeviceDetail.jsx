@@ -83,7 +83,7 @@ export default function DeviceDetail() {
         >
           <Tab label="Overview" {...a11yProps(0)} />
           <Tab label="Data Mapping" {...a11yProps(1)} />
-          <Tab label="Configuration" {...a11yProps(2)} />
+          {/* <Tab label="Configuration" {...a11yProps(2)} /> */}
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -92,9 +92,9 @@ export default function DeviceDetail() {
       <CustomTabPanel value={value} index={1}>
         <KeyValueInput device={device} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
+      {/* <CustomTabPanel value={value} index={2}>
         Item Three
-      </CustomTabPanel>
+      </CustomTabPanel> */}
     </Box>
   );
 }
