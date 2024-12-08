@@ -184,7 +184,7 @@ export default function Connections() {
           >
             <Tab label="Status" {...a11yProps(0)} />
             <Tab label="Add Connection" {...a11yProps(1)} />
-            <Tab label="Item Three" {...a11yProps(2)} />
+            {/* <Tab label="Item Three" {...a11yProps(2)} /> */}
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>

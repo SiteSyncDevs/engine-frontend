@@ -4,48 +4,64 @@ import CustomButton from "../form/CustomButton";
 import TextInput from "../form/TextInput";
 import Dropdown from "../form/Dropdown";
 import ApiHandler from "../../api/ApiHandler";
-export default function DeviceCreationForm() {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [dev_eui, setDevEUI] = useState("");
-  const [join_eui, setJoinEUI] = useState("");
-  const [app_key, setAppKey] = useState("");
-  const [device_profile_id, setDeviceProfile] = useState("");
-  const [deviceProfiles, setDeviceProfiles] = useState([]);
+export default function DeviceCreationForm(device, deviceProfiles) {
+
   const [selectedDeviceProfile, setSelectedDeviceProfile] = useState(null);
 
-  useEffect(() => {
-    const fetchDeviceProfiles = async () => {
-      try {
-        const deviceProfilesRes = await ApiHandler.get(
-          "/routers/v1/device-profile"
-        );
-        const transformedProfiles = deviceProfilesRes.map((profile) => ({
-          value: profile.id,
-          label: profile.name,
-        }));
 
-        setDeviceProfiles(transformedProfiles);
-        console.log("Device Profiles:", transformedProfiles);
-      } catch (error) {
-        console.error("Failed to fetch device profiles:", error);
-      }
-    };
+  const [name, setName] = useState(device.name);
+  const [description, setDescription] = useState();
+  const [dev_eui, setDevEUI] = useState(device.devEUI);
+  const [join_eui, setJoinEUI] = useState(device.appEui);
+  const [app_key, setAppKey] = useState(device.appKey);
+  const [device_profile_id, setDeviceProfile] = useState(device.deviceProfile);
+  //const [deviceProfiles, setDeviceProfiles] = useState([]);
+ 
+  // useEffect(() => {
+  //   const fetchDeviceProfiles = async () => {
+  //     try {
+  //       const deviceProfilesRes = await ApiHandler.get(
+  //         "/routers/v1/device-profile"
+  //       );
+  //       const transformedProfiles = deviceProfilesRes.map((profile) => ({
+  //         value: profile.id,
+  //         label: profile.name,
+  //       }));
 
-    fetchDeviceProfiles();
-  }, []);
+  //       setDeviceProfiles(transformedProfiles);
+  //       console.log("Device Profiles:", transformedProfiles);
+  //     } catch (error) {
+  //       console.error("Failed to fetch device profiles:", error);
+  //     }
+  //   };
+
+  //   fetchDeviceProfiles();
+  // }, []);
   const handleSubmit = async () => {
     try {
-      const payload = {
-        name,
-        description,
-        dev_eui,
-        join_eui,
-        app_key,
-        device_profile_id,
-      };
-      console.log("Submitting device:", payload);
-      // Add your device creation logic here
+
+        const apiData = {
+                device_name: name,
+                dev_eui: dev_eui,
+                join_eui: join_eui,
+                app_key: app_key,
+                device_profile_id:device_profile_id,
+                description: description
+              };
+              ApiHandler.post("/routers/v1/device", apiData).then((data) => {
+                console.log("Data:", data);
+              });
+
+    //   const payload = {
+    //     name,
+    //     description,
+    //     dev_eui,
+    //     join_eui,
+    //     app_key,
+    //     device_profile_id,
+    //   };
+    //   console.log("Submitting device:", payload);
+    //   // Add your device creation logic here
     } catch (error) {
       console.error("Error creating device:", error);
     }
@@ -81,17 +97,17 @@ export default function DeviceCreationForm() {
         <TextInput
           label="App Key"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => setAppKey(e.target.value)}
           fullWidth={true}
         />
         <div className="mt-4" />
-        <Dropdown
+        {/* <Dropdown
           options={deviceProfiles}
           topLabel="Device Profile"
           value={selectedDeviceProfile}
           onChange={(value) => setSelectedDeviceProfile(value)}
           maxWidth={525}
-        />
+        /> */}
       </div>
       <CustomButton onClick={handleSubmit} label="Create Device" />
     </div>

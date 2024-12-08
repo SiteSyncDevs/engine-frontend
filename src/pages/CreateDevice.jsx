@@ -1,5 +1,5 @@
 import BulkUploader from "../components/BulkUploader";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, useMediaQuery } from "@mui/material";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import ApiHandler from "../api/ApiHandler";
@@ -45,16 +45,49 @@ export default function CreateDevice() {
     setValue(newValue);
   };
 
+  const [deviceProfiles, setDeviceProfiles] = useState([]);
   const [open, setOpen] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [scanData, setScanData] = useState(null);
   const isMobile = useMediaQuery("(max-width:600px)"); // Detect mobile screen size
 
-  const [appKey, setAppKey] = useState("");
-  const [devEUI, setDevEUI] = useState("");
+  const [device, setDevice] = useState({
+    appKey: "",
+    devEUI: "",
+    appEui: "",
+    deviceProfile: "",
+    deviceName: "",
+  });
+  // const [appKey, setAppKey] = useState("");
+  // const [devEUI, setDevEUI] = useState("");
 
-  const [appEui, setAppEui] = useState("");
-  const [deviceProfile, setDeviceProfile] = useState("");
+  // const [appEui, setAppEui] = useState("");
+  // const [deviceProfile, setDeviceProfile] = useState("");
+
+ 
+
+  useEffect(() => {
+    const fetchDeviceProfiles = async () => {
+      console.log("Fetching device profiles...");
+      try {
+        const deviceProfilesRes = await ApiHandler.get(
+          "/routers/v1/device-profile"
+        );
+        const transformedProfiles = deviceProfilesRes.map((profile) => ({
+          value: profile.id,
+          label: profile.name,
+        }));
+
+        setDeviceProfiles(transformedProfiles);
+        console.log("Device Profiles:", transformedProfiles);
+      } catch (error) {
+        console.error("Failed to fetch device profiles:", error);
+      }
+    };
+
+    fetchDeviceProfiles();
+  }, []);
+
 
   const handleOpen = () => {
     setOpen(true);
@@ -64,6 +97,17 @@ export default function CreateDevice() {
   const handleClose = () => {
     setOpen(false);
     setIsScanning(false); // Stop scanning when modal closes
+  };
+
+  const findDeviceProfileID = (name) => {
+    const profile = deviceProfiles.find((profile) => profile.label === name);
+    return profile ? profile.value : null;
+  };
+
+  const generateDeviceName = (deviceProfileName) => {
+    //get last 4 characters of devEUI
+    const lastFour = devEUI.slice(-4);
+    return `${deviceProfileName}-${lastFour}`;
   };
 
   const handleScan = (result) => {
@@ -81,25 +125,31 @@ export default function CreateDevice() {
       }
       const app_key = parts[0];
       const dev_eui = parts[1];
-      const deviceProfile = parts[2];
+      const deviceProfileName = parts[2];
       const join_eui = parts[3];
-      const apiData = {
-        device_name: "Test Device",
-        dev_eui: dev_eui,
-        join_eui: join_eui,
-        app_key: app_key,
-        device_profile_id: deviceProfile,
-      };
-      ApiHandler.post("/routers/v1/device", apiData).then((data) => {
-        console.log("Data:", data);
-      });
+      // const apiData = {
+      //   device_name: "Test Device",
+      //   dev_eui: dev_eui,
+      //   join_eui: join_eui,
+      //   app_key: app_key,
+      //   device_profile_id: findDeviceProfileID(deviceProfile),
+      // };
+      // ApiHandler.post("/routers/v1/device", apiData).then((data) => {
+      //   console.log("Data:", data);
+      // });
       // Assign the three parts to variables
-
-      setAppKey(app_key);
-      setDevEUI(dev_eui);
-
-      setAppEui(join_eui);
-      setDeviceProfile(deviceProfile);
+      setDevice({
+        appKey: app_key,
+        devEUI: dev_eui,
+        appEui: join_eui,
+        deviceProfile: findDeviceProfileID(deviceProfileName),
+        deviceName: generateDeviceName(deviceProfileName),
+      });
+      // setAppKey(app_key);
+      // setDevEUI(dev_eui);
+      // setDeviceName(generateDeviceName(deviceProfileName));
+      // setAppEui(join_eui);
+      // setDeviceProfile(findDeviceProfileID(deviceProfileName));
 
       handleClose(); // Close both the scanner and the modal
     }
@@ -114,15 +164,16 @@ export default function CreateDevice() {
             onChange={handleChange}
             aria-label="basic tabs example"
           >
-            <Tab label="Bulk upload" {...a11yProps(0)} />
-            <Tab label="QR Scan" {...a11yProps(1)} />
-            <Tab label="Ole Fashioned Way" {...a11yProps(2)} />
+            <Tab label="Add Device" {...a11yProps(0)} />
+            <Tab label="Upload" {...a11yProps(1)} />
+      
+            {/* <Tab label="Ole Fashioned Way" {...a11yProps(2)} /> */}
           </Tabs>
         </Box>
-        <CustomTabPanel value={value} index={0}>
-          <BulkUploader />
-        </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
+          <BulkUploader   deviceProfiles={deviceProfiles}/>
+        </CustomTabPanel>
+        {/* <CustomTabPanel value={value} index={1}>
           <Button onClick={handleOpen}>Open modal</Button>
           <Modal
             open={open}
@@ -165,9 +216,46 @@ export default function CreateDevice() {
           <h2>Dev EUI: {devEUI}</h2>
           <h2>App EUI: {appEui}</h2>
           <h2>Device Profile: {deviceProfile}</h2>{" "}
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={2}>
-          <CreateDeviceForm />
+        </CustomTabPanel> */}
+        <CustomTabPanel value={value} index={0}>
+        <Button onClick={handleOpen}>Scan QR Code</Button>
+        <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+                backgroundColor: "rgba(0, 0, 0, 0.85)", // Dark background
+              }}
+            >
+              <div
+                style={{
+                  width: isMobile ? "100%" : "80%",
+                  height: isMobile ? "100%" : "80%",
+                  backgroundColor: "white",
+                  borderRadius: isMobile ? "0" : "8px",
+                  overflow: "hidden",
+                  position: "relative",
+                }}
+              >
+                {isScanning && (
+                  <Scanner
+                    onScan={handleScan}
+                    onError={(error) =>
+                      console.error("QR Scanner Error:", error)
+                    }
+                  />
+                )}
+              </div>
+            </div>
+          </Modal>
+          <CreateDeviceForm device={device} deviceProfiles={deviceProfiles} />
         </CustomTabPanel>
       </Box>
 

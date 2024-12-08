@@ -8,12 +8,12 @@ import ApiHandler from "../api/ApiHandler";
 import { Api } from "@mui/icons-material";
 import Dropdown from "./form/Dropdown";
 
-export default function BulkUploader() {
+export default function BulkUploader(deviceProfiles) {
   const [devices, setDevices] = useState([]);
   const [selectedDeviceProfile, setSelectedDeviceProfile] = useState(null);
   const [filename, setFilename] = useState("");
   const [file, setFile] = useState(null);
-  const [deviceProfiles, setDeviceProfiles] = useState([]);
+  // const [deviceProfiles, setDeviceProfiles] = useState([]);
 
   const handleSubmit = () => {
     const formData = {
@@ -34,26 +34,26 @@ export default function BulkUploader() {
     }
   };
 
-  useEffect(() => {
-    const fetchDeviceProfiles = async () => {
-      try {
-        const deviceProfilesRes = await ApiHandler.get(
-          "/routers/v1/device-profile"
-        );
-        const transformedProfiles = deviceProfilesRes.map((profile) => ({
-          value: profile.id,
-          label: profile.name,
-        }));
+  // useEffect(() => {
+  //   const fetchDeviceProfiles = async () => {
+  //     try {
+  //       const deviceProfilesRes = await ApiHandler.get(
+  //         "/routers/v1/device-profile"
+  //       );
+  //       const transformedProfiles = deviceProfilesRes.map((profile) => ({
+  //         value: profile.id,
+  //         label: profile.name,
+  //       }));
 
-        setDeviceProfiles(transformedProfiles);
-        console.log("Device Profiles:", transformedProfiles);
-      } catch (error) {
-        console.error("Failed to fetch device profiles:", error);
-      }
-    };
+  //       setDeviceProfiles(transformedProfiles);
+  //       console.log("Device Profiles:", transformedProfiles);
+  //     } catch (error) {
+  //       console.error("Failed to fetch device profiles:", error);
+  //     }
+  //   };
 
-    fetchDeviceProfiles();
-  }, []);
+  //   fetchDeviceProfiles();
+  // }, []);
   // const handleFileUpload = (uploadedFile) => {
   //   setFile(uploadedFile);
   //   console.log("Uploaded File:", uploadedFile);
