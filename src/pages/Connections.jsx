@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import ConnectionsStatus from "../components/connections/ConnectionsStatus";
 import CreateConnectionModal from "../components/connections/CreateConnectionModal";
+import NoConnectionsFound from "../components/connections/NoConnectionsFound";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
+import ApiHandler from "../api/ApiHandler";
 import ConnectionCreationViewer from "../components/connections/ConnectionCreationViewer";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -36,91 +38,107 @@ function a11yProps(index) {
 }
 
 export default function Connections() {
-  const connections = [
-    {
-      id: 1,
-      name: "PLC Logix",
-      description:
-        "Puts valve position data into the distallation tower's PLC register.",
-      protocol: "TCP",
-      address: "192.168.1.1",
-      connected: true,
-      lastStatusCheck: "2024-11-01 17:32:21",
-    },
-    {
-      id: 2,
-      name: "Aloxy.Core",
-      description: "Aloxy Webhook Integration.",
-      protocol: "HTTPS",
-      address: "192.168.1.2",
-      connected: false,
-      lastStatusCheck: "2024-10-31 12:21:36",
-    },
-    {
-      id: 3,
-      name: "MQTT",
-      description: "Connection to external Chariot broker.",
-      protocol: "MQTT",
-      address: "192.168.1.3",
-      connected: true,
-      lastStatusCheck: "2024-11-22 01:05:21",
-    },
-    {
-      id: 3,
-      name: "MQTT",
-      description: "Connection to external Chariot broker.",
-      protocol: "MQTT",
-      address: "192.168.1.3",
-      connected: true,
-      lastStatusCheck: "2024-11-22 01:05:21",
-    },
-    {
-      id: 3,
-      name: "MQTT",
-      description: "Connection to external Chariot broker.",
-      protocol: "MQTT",
-      address: "192.168.1.3",
-      connected: true,
-      lastStatusCheck: "2024-11-22 01:05:21",
-    },
-    {
-      id: 3,
-      name: "MQTT",
-      description: "Connection to external Chariot broker.",
-      protocol: "MQTT",
-      address: "192.168.1.3",
-      connected: true,
-      lastStatusCheck: "2024-11-22 01:05:21",
-    },
-    {
-      id: 3,
-      name: "MQTT",
-      description: "Connection to external Chariot broker.",
-      protocol: "MQTT",
-      address: "192.168.1.3",
-      connected: true,
-      lastStatusCheck: "2024-11-22 01:05:21",
-    },
-    {
-      id: 3,
-      name: "MQTT",
-      description: "Connection to external Chariot broker.",
-      protocol: "MQTT",
-      address: "192.168.1.3",
-      connected: true,
-      lastStatusCheck: "2024-11-22 01:05:21",
-    },
-    {
-      id: 3,
-      name: "MQTT",
-      description: "Connection to external Chariot broker.",
-      protocol: "MQTT",
-      address: "192.168.1.3",
-      connected: true,
-      lastStatusCheck: "2024-11-22 01:05:21",
-    },
+
+  const [connections, setConnections] = useState([]);
+  useEffect(() => {
+    const fetchConnections = async () => {
+      try {
+        const data = await ApiHandler.get(`/routers/v1/connections`);
+        console.log('Connections:', data);
+        setConnections(data);
+      } catch (error) {
+        console.error('Error fetching connections:', error);
+      }
+    };
+
+    fetchConnections();
+  }, []);
+
+  // const connections = [
+  //   {
+  //     id: 1,
+  //     name: "PLC Logix",
+  //     description:
+  //       "Puts valve position data into the distallation tower's PLC register.",
+  //     protocol: "TCP",
+  //     address: "192.168.1.1",
+  //     connected: true,
+  //     lastStatusCheck: "2024-11-01 17:32:21",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Aloxy.Core",
+  //     description: "Aloxy Webhook Integration.",
+  //     protocol: "HTTPS",
+  //     address: "192.168.1.2",
+  //     connected: false,
+  //     lastStatusCheck: "2024-10-31 12:21:36",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "MQTT",
+  //     description: "Connection to external Chariot broker.",
+  //     protocol: "MQTT",
+  //     address: "192.168.1.3",
+  //     connected: true,
+  //     lastStatusCheck: "2024-11-22 01:05:21",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "MQTT",
+  //     description: "Connection to external Chariot broker.",
+  //     protocol: "MQTT",
+  //     address: "192.168.1.3",
+  //     connected: true,
+  //     lastStatusCheck: "2024-11-22 01:05:21",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "MQTT",
+  //     description: "Connection to external Chariot broker.",
+  //     protocol: "MQTT",
+  //     address: "192.168.1.3",
+  //     connected: true,
+  //     lastStatusCheck: "2024-11-22 01:05:21",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "MQTT",
+  //     description: "Connection to external Chariot broker.",
+  //     protocol: "MQTT",
+  //     address: "192.168.1.3",
+  //     connected: true,
+  //     lastStatusCheck: "2024-11-22 01:05:21",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "MQTT",
+  //     description: "Connection to external Chariot broker.",
+  //     protocol: "MQTT",
+  //     address: "192.168.1.3",
+  //     connected: true,
+  //     lastStatusCheck: "2024-11-22 01:05:21",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "MQTT",
+  //     description: "Connection to external Chariot broker.",
+  //     protocol: "MQTT",
+  //     address: "192.168.1.3",
+  //     connected: true,
+  //     lastStatusCheck: "2024-11-22 01:05:21",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "MQTT",
+  //     description: "Connection to external Chariot broker.",
+  //     protocol: "MQTT",
+  //     address: "192.168.1.3",
+  //     connected: true,
+  //     lastStatusCheck: "2024-11-22 01:05:21",
+  //   },
     // Add more connections as needed
-  ];
+ // ];
 
   const [value, setValue] = useState(0);
 
@@ -170,7 +188,7 @@ export default function Connections() {
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-          <ConnectionsStatus connections={connections} />
+          {connections.length > 0 ? <ConnectionsStatus connections={connections} />: <NoConnectionsFound/>}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           <ConnectionCreationViewer />{" "}
