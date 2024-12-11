@@ -38,8 +38,7 @@ export default function BulkUploader(deviceProfiles) {
         console.log("Device:", device);
         device.deviceProfileId = selectedDeviceProfile;
         const response = await ApiHandler.post("/routers/v1/device", {
-          device,
-          deviceProfileId: selectedDeviceProfile.value,
+          device
         });
         console.log("Device uploaded successfully:", response);
       } catch (error) {
