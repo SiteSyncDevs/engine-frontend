@@ -4,7 +4,7 @@ import CustomButton from "../form/CustomButton";
 import TextInput from "../form/TextInput";
 import Dropdown from "../form/Dropdown";
 import ApiHandler from "../../api/ApiHandler";
-export default function DeviceCreationForm(device, deviceProfiles) {
+export default function DeviceCreationForm({device, deviceProfiles}) {
  console.log(deviceProfiles.length);
   const [selectedDeviceProfile, setSelectedDeviceProfile] = useState(null);
 

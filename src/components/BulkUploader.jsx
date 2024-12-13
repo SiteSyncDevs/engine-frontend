@@ -8,7 +8,7 @@ import ApiHandler from "../api/ApiHandler";
 import { Api } from "@mui/icons-material";
 import Dropdown from "./form/Dropdown";
 
-export default function BulkUploader(deviceProfiles) {
+export default function BulkUploader({deviceProfiles}) {
   const [devices, setDevices] = useState([]);
   const [selectedDeviceProfile, setSelectedDeviceProfile] = useState(null);
   const [filename, setFilename] = useState("");
