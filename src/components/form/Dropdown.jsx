@@ -13,7 +13,7 @@ export default function Dropdown({ options, label, value, onChange, showTopLabel
   };
 
   return (
-    <Box sx={{ minWidth: 120, maxWidth: maxWidth }}>
+    <Box sx={{ minWidth: 120, maxWidth: maxWidth, width: 400 }}>
         { topLabel && <h1 className="mb-1">{topLabel}</h1>}
       <FormControl fullWidth>
         <InputLabel id={`${label}-select-label`}>{label}</InputLabel>

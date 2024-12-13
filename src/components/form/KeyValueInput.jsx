@@ -108,6 +108,8 @@ export default function KeyValueInput({device}) {
             onChange={(e) => handleInputChange(index, "decoded_attribute", e.target.value)}
           /> */}
           <input
+            style={{
+              width: "300px"}}
             type="text"
             className="border border-gray-300 rounded-md w-1/2 p-2"
             placeholder="Value"
