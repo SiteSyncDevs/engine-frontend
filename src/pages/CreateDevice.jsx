@@ -8,6 +8,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import CreateDeviceForm from "../components/device/DeviceCreationForm";
+import PopupAlert from "../components/utils/PopupAlert/Popup";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -40,6 +41,7 @@ function a11yProps(index) {
 
 export default function CreateDevice() {
   const [value, setValue] = React.useState(0);
+  const [alert, setAlert] = useState(null);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -64,8 +66,6 @@ export default function CreateDevice() {
   // const [appEui, setAppEui] = useState("");
   // const [deviceProfile, setDeviceProfile] = useState("");
 
- 
-
   useEffect(() => {
     const fetchDeviceProfiles = async () => {
       console.log("Fetching device profiles...");
@@ -87,7 +87,6 @@ export default function CreateDevice() {
 
     fetchDeviceProfiles();
   }, []);
-
 
   const handleOpen = () => {
     setOpen(true);
@@ -166,12 +165,12 @@ export default function CreateDevice() {
           >
             <Tab label="Add Device" {...a11yProps(0)} />
             <Tab label="Upload" {...a11yProps(1)} />
-      
+
             {/* <Tab label="Ole Fashioned Way" {...a11yProps(2)} /> */}
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={1}>
-          <BulkUploader   deviceProfiles={deviceProfiles}/>
+          <BulkUploader deviceProfiles={deviceProfiles} />
         </CustomTabPanel>
         {/* <CustomTabPanel value={value} index={1}>
           <Button onClick={handleOpen}>Open modal</Button>
@@ -218,8 +217,8 @@ export default function CreateDevice() {
           <h2>Device Profile: {deviceProfile}</h2>{" "}
         </CustomTabPanel> */}
         <CustomTabPanel value={value} index={0}>
-        <Button onClick={handleOpen}>Scan QR Code</Button>
-        <Modal
+          <Button onClick={handleOpen}>Scan QR Code</Button>
+          <Modal
             open={open}
             onClose={handleClose}
             aria-labelledby="modal-modal-title"

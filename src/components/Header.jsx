@@ -1,13 +1,9 @@
 import logo from '../assets/logo.png';
-export default function Heder({onClick}) {
 
+export default function Header({ onClick }) {
   return (
-    <div className="bg-[#008080] h-16 w-screen">
-      {/* <h1>SiteSync Engine</h1>
-      */}
-
-      <img src={logo} alt="SiteSync Logo" />
-      {/* <button onClick={onClick} >Logout</button> */}
+    <div className="bg-[#008080] h-16 w-screen flex items-center justify-between px-4">
+      <img src={logo} alt="SiteSync Logo" className="h-10" />
     </div>
   );
 }

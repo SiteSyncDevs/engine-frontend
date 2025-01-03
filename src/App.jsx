@@ -1,50 +1,108 @@
 import { useState } from "react";
-
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import DeviceManagement from "./pages/Devices";
-import CreateDevice from "./pages/CreateDevice";
-import Connections from "./pages/Connections";
+import { BrowserRouter as Router, Link } from "react-router-dom";
+import { IconButton, useMediaQuery } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 import Header from "./components/Header";
 import AppRoutes from "./Routes";
+
 function App() {
   const [collapsed, setCollapsed] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setSidebarOpen(false);
+  };
 
   return (
     <Router>
-      <div
-        style={{ display: "flex", flexDirection: "column", height: "100vh", width: "100vw" }}
-      >
+      <div className="flex flex-col h-screen w-screen overflow-hidden">
         {/* Header */}
-        <Header onClick={() => setCollapsed(!collapsed)}/>
+        <Header onClick={() => setCollapsed(!collapsed)} />
 
         {/* Main Layout */}
-        <div style={{ display: "flex", flex: 1 }}>
-          {/* Sidebar */}
-          <Sidebar collapsed={collapsed} collapsedWidth="70px">
-            <Menu>
-              <MenuItem component={<Link to="/" />}>Home</MenuItem>
-              <SubMenu label="Devices">
-                <MenuItem component={<Link to="/device/manage" />}>
-                  Manage
-                </MenuItem>
-                <MenuItem component={<Link to="/device/create" />}>
-                  Create
-                </MenuItem>
-              </SubMenu>
+        <div className="flex flex-1 overflow-hidden relative">
+          {/* Overlay for mobile */}
+          {isMobile && sidebarOpen && (
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out z-40"
+              onClick={closeSidebar}
+            />
+          )}
 
-              <MenuItem component={<Link to="/connections" />}>
-                Connections
-              </MenuItem>
-            </Menu>
-          </Sidebar>
+          {/* Sidebar */}
+          <div className={`
+            transition-transform duration-300 ease-in-out
+            ${isMobile ? 'fixed h-full' : 'relative'} 
+            ${isMobile && !sidebarOpen ? '-translate-x-full' : 'translate-x-0'}
+            z-50
+          `}>
+            <Sidebar
+              collapsed={collapsed}
+              collapsedWidth="70px"
+              width="250px"
+              className="h-[calc(100vh-64px)] shadow-lg"
+              toggled={sidebarOpen}
+              onBackdropClick={closeSidebar}
+              breakPoint="sm"
+            >
+              <Menu>
+                <MenuItem 
+                  onClick={closeSidebar} 
+                  component={<Link to="/" />}
+                >
+                  Home
+                </MenuItem>
+                <SubMenu label="Devices">
+                  <MenuItem 
+                    onClick={closeSidebar} 
+                    component={<Link to="/device/manage" />}
+                  >
+                    Manage
+                  </MenuItem>
+                  <MenuItem 
+                    onClick={closeSidebar} 
+                    component={<Link to="/device/create" />}
+                  >
+                    Create
+                  </MenuItem>
+                </SubMenu>
+                <MenuItem 
+                  onClick={closeSidebar} 
+                  component={<Link to="/connections" />}
+                >
+                  Connections
+                </MenuItem>
+              </Menu>
+            </Sidebar>
+          </div>
 
           {/* Main Content */}
-          <div style={{ flex: 1, padding: "20px" }}>
+          <div className="flex-1 p-5 overflow-auto">
             <AppRoutes />
           </div>
         </div>
+
+        {/* Sidebar toggle button for mobile */}
+        {isMobile && (
+          <IconButton
+            onClick={toggleSidebar}
+            className="fixed bottom-4 left-4 z-50 bg-white shadow-lg hover:bg-gray-100"
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: '50%',
+            }}
+          >
+            {sidebarOpen ? <CloseIcon /> : <MenuIcon />}
+          </IconButton>
+        )}
       </div>
     </Router>
   );

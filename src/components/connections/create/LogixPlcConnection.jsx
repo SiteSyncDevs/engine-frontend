@@ -2,7 +2,7 @@ import { useState } from "react";
 import TextInput from "../../form/TextInput";
 import FileUpload from "../../form/FileUpload";
 import { useEffect } from "react";
-  import ApiHandler from "../../../api/ApiHandler";
+import ApiHandler from "../../../api/ApiHandler";
 import {
   Box,
   Typography,
@@ -25,9 +25,6 @@ export default function LogixPlcConnection() {
   const [password, setPassword] = useState("");
   //const [plcOptions, setPlcOptions] = useState([]);
 
-
-  
-
   // useEffect(() => {
   //   const fetchPlcOptions = async () => {
   //     try {
@@ -40,12 +37,8 @@ export default function LogixPlcConnection() {
 
   //   fetchPlcOptions();
   // }, []);
-  const plcOptions = [
-    { value: "Logix", label: "Logix" }
-  ];
+  const plcOptions = [{ value: "Logix", label: "Logix" }];
   const handleSubmit = async () => {
-
-
     const formData = {
       id: 0,
       connectionName: friendlyName,
@@ -57,13 +50,13 @@ export default function LogixPlcConnection() {
     };
 
     try {
-          const response = await ApiHandler.post("/routers/v1/connections", {
-            formData
+      const response = await ApiHandler.post("/routers/v1/connections", {
+        formData,
       });
       console.log("Connection created successfully:", response);
       //then navigate to status page
     } catch (error) {
-      console.error("Failed to create connection device:",formData, error);
+      console.error("Failed to create connection device:", formData, error);
     }
 
     console.log("Form Data:", formData);
@@ -88,7 +81,13 @@ export default function LogixPlcConnection() {
             setFriendlyName(newValue);
           }}
         />
-        <Dropdown topLabel="PLC Type" options={plcOptions} value={plcModel} showTopLabel={true} onChange={(value) => setPlcModel(value)}/>
+        <Dropdown
+          topLabel="PLC Type"
+          options={plcOptions}
+          value={plcModel}
+          showTopLabel={true}
+          onChange={(value) => setPlcModel(value)}
+        />
         <TextInput
           label="PLC IP"
           name="name"

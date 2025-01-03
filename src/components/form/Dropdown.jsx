@@ -13,8 +13,8 @@ export default function Dropdown({ options, label, value, onChange, showTopLabel
   };
 
   return (
-    <Box sx={{ minWidth: 120, maxWidth: maxWidth, width: 400 }}>
-        { topLabel && <h1 className="mb-1">{topLabel}</h1>}
+    <Box className="w-full md:w-auto" sx={{ minWidth: 120, maxWidth: maxWidth }}>
+      {topLabel && <h1 className="mb-1">{topLabel}</h1>}
       <FormControl fullWidth>
         <InputLabel id={`${label}-select-label`}>{label}</InputLabel>
         <Select
@@ -23,7 +23,6 @@ export default function Dropdown({ options, label, value, onChange, showTopLabel
           value={value || ""}
           label={label}
           onChange={handleChange}
-          sx={{}}
         >
           {options.map((option) => (
             <MenuItem key={option.value} value={option.value}>

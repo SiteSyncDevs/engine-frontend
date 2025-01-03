@@ -16,15 +16,19 @@ export default function DeviceManagement() {
       const data = await ApiHandler.get("/routers/v1/device/mappings");
       console.log("Data:", data);
       //{
-    //     "dev_eui": d['dev_eui'],
-    //     "name":d['name'],
-    //     "device_type":device["deviceType"],
-    //     "attribute":t,
-    //     "mapping":v
+      //     "dev_eui": d['dev_eui'],
+      //     "name":d['name'],
+      //     "device_type":device["deviceType"],
+      //     "attribute":t,
+      //     "mapping":v
 
-    // }
+      // }
       const headers = "DevEUI,DeviceName,Source,Destination\n";
-      const rows = data.map((tag) => `${tag.dev_eui},${tag.name},${tag.attribute},${tag.mapping}`).join("\n");
+      const rows = data
+        .map(
+          (tag) => `${tag.dev_eui},${tag.name},${tag.attribute},${tag.mapping}`
+        )
+        .join("\n");
       const csvContent = headers + rows;
       const blob = new Blob([csvContent], { type: "text/csv" });
       const url = URL.createObjectURL(blob);
@@ -34,11 +38,9 @@ export default function DeviceManagement() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
     } catch (error) {
       console.error("Error fetching devices:", error);
     }
-    
   };
   // Fetch devices when the component mounts
   useEffect(() => {
@@ -56,19 +58,23 @@ export default function DeviceManagement() {
   }, []); // Empty dependency array ensures this runs only once
   return (
     <div>
-      
-      <LoRaDeviceTable devices={apiDevices} />
-
       {/* <CustomButton handleSubmit={handleSubmit} label="Submit" /> */}
 
-      <div className="flex flex-row gap-12  w-1/3 mt-4">
+      <div className="p-4 md:p-8">
+      <LoRaDeviceTable devices={apiDevices} />
+
+      <div className="flex flex-col md:flex-row gap-4 mt-4">
         <CustomButton
           handleSubmit={handleSubmit}
           label="Export Configurations"
           hoverText="Export all device configurations"
         />
-        <FileUpload label="Upload configuration" hoverText="Upload new system configuration"/>
+        <FileUpload
+          label="Upload configuration"
+          hoverText="Upload new system configuration"
+        />
       </div>
+    </div>
     </div>
   );
 }

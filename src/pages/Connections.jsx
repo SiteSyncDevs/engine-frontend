@@ -8,6 +8,7 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import ApiHandler from "../api/ApiHandler";
 import ConnectionCreationViewer from "../components/connections/ConnectionCreationViewer";
+
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -171,30 +172,29 @@ export default function Connections() {
   }, []);
 
   return (
-    <div>
- 
-
-      {/* <ConnectionsStatus connections={connections} /> */}
+    <div className="p-4 md:p-8">
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={value}
             onChange={handleChange}
             aria-label="basic tabs example"
+            variant="scrollable"
+            scrollButtons="auto"
           >
             <Tab label="Status" {...a11yProps(0)} />
             <Tab label="Add Connection" {...a11yProps(1)} />
-            {/* <Tab label="Item Three" {...a11yProps(2)} /> */}
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-          {connections.length > 0 ? <ConnectionsStatus connections={connections} />: <NoConnectionsFound/>}
+          {connections.length > 0 ? (
+            <ConnectionsStatus connections={connections} />
+          ) : (
+            <NoConnectionsFound />
+          )}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          <ConnectionCreationViewer />{" "}
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={2}>
-          Item Three
+          <ConnectionCreationViewer />
         </CustomTabPanel>
       </Box>
     </div>
