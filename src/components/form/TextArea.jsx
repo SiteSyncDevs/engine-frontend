@@ -12,6 +12,10 @@ const TextArea = ({
 }) => {
   const [inputValue, setInputValue] = useState(value || "");
 
+  useEffect(() => {
+    setInputValue(value);
+  }, [value]);
+
   // Handle changes to the input value
   const handleInputChange = (event) => {
     const newValue = event.target.value;
@@ -22,13 +26,13 @@ const TextArea = ({
   };
 
   return (
-    <div className="mt-2">
+    <div className="mt-2 mb-5">
       <h1 className="mb-1">{label}</h1>
       
       <TextField
         // label={label}
         type={type}
-        size="small"
+        size="Large"
         placeholder={placeholder}
         value={inputValue}
         multiline

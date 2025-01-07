@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
-import { TextField, Button } from "@mui/material";
+import { useState } from "react";
 import CustomButton from "../form/CustomButton";
 import TextInput from "../form/TextInput";
 import Dropdown from "../form/Dropdown";
 import ApiHandler from "../../api/ApiHandler";
 import PopupAlert from "../utils/PopupAlert/Popup";
+import TextArea from "../form/TextArea";
 
-export default function DeviceCreationForm({ device, deviceProfiles }) {
+export default function DeviceCreationForm({ device, deviceProfiles, errors, scanData }) {
   const [selectedDeviceProfile, setSelectedDeviceProfile] = useState(null);
-  const [name, setName] = useState(device.name);
+  const [name, setName] = useState(device.deviceName);
   const [description, setDescription] = useState();
   const [dev_eui, setDevEUI] = useState(device.devEUI);
   const [join_eui, setJoinEUI] = useState(device.appEui);
@@ -29,7 +29,6 @@ export default function DeviceCreationForm({ device, deviceProfiles }) {
       ApiHandler.post("/routers/v1/device", apiData).then((data) => {
         console.log("Data:", data);
 
-        // show success message
         setAlert({
           type: "success",
           message: "Device Created Successfully.",
@@ -61,6 +60,8 @@ export default function DeviceCreationForm({ device, deviceProfiles }) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             fullWidth={true}
+            error={errors.deviceName}
+            helperText="Please enter the device name."
           />
         </div>
         {/* Dev EUI and Join EUI in a Flex Row */}
@@ -70,12 +71,16 @@ export default function DeviceCreationForm({ device, deviceProfiles }) {
             value={dev_eui}
             onChange={(e) => setDevEUI(e.target.value)}
             fullWidth={true}
+            error={errors.devEUI}
+            helperText="Please enter the Dev EUI."
           />
           <TextInput
             label="Join EUI"
             value={join_eui}
             onChange={(e) => setJoinEUI(e.target.value)}
             fullWidth={true}
+            error={errors.appEui}
+            helperText="Please enter the Join EUI."
           />
         </div>
         <div className="w-full md:w-1/3 mb-6">
@@ -84,6 +89,8 @@ export default function DeviceCreationForm({ device, deviceProfiles }) {
             value={app_key}
             onChange={(e) => setAppKey(e.target.value)}
             fullWidth={true}
+            error={errors.appKey}
+            helperText="Please enter the App Key."
           />
           <div className="mt-4" />
 
@@ -96,9 +103,14 @@ export default function DeviceCreationForm({ device, deviceProfiles }) {
               value={selectedDeviceProfile}
               onChange={(value) => setSelectedDeviceProfile(value)}
               maxWidth={525}
+              error={errors.deviceProfile}
+              helperText="Please select a device profile."
             />
           )}
         </div>
+
+        <TextArea value={scanData} placeholder="Scan data will appear here" />
+
         <CustomButton handleSubmit={handleSubmit} label="Create Device" />
       </div>
     </>

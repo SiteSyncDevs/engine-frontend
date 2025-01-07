@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import TextInput from "../form/TextInput";
 import TextArea from "../form/TextArea";
 import ApiHandler from "../../api/ApiHandler";
-import EditIcon from '@mui/icons-material/Edit'; 
+import EditIcon from '@mui/icons-material/Edit';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 
@@ -13,7 +13,7 @@ export default function DeviceDashboard({ device }) {
   });
 
   const handleInputChange = (name, value) => {
-  
+
     setFormData({
       ...formData,
       [name]: value,
@@ -26,7 +26,6 @@ export default function DeviceDashboard({ device }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
     ApiHandler.put("/routers/v1/device", formData).then(response => {
       console.log("Response:", response);
     }).catch(error => {
@@ -36,41 +35,39 @@ export default function DeviceDashboard({ device }) {
   };
 
   return (
-  
-      <div>
-        <button  className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-md"  onClick={handleToggleEdit}>
-          {isEditing ? 'Cancel' : 'Edit'}
-        
- 
-          {isEditing ? <CancelIcon className="ml-2" /> : <EditIcon className="ml-2" />} 
-        </button>
-        {isEditing ? (
-          <form onSubmit={handleSubmit}>
-            <div>
-              <label>
-           
-                <TextInput
-                  label="Name"
-                  value={device.name}
-                  onChange={(value) => handleInputChange("name", value)}
-                  fullWidth={true}
-                />
-                
-              </label>
-            </div>
-            <div>
-              <label>
+
+    <div>
+      <button className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-md" onClick={handleToggleEdit}>
+        {isEditing ? 'Cancel' : 'Edit'}
+
+
+        {isEditing ? <CancelIcon className="ml-2" /> : <EditIcon className="ml-2" />}
+      </button>
+      {isEditing ? (
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label>
+              <TextInput
+                label="Name"
+                value={device.name}
+                onChange={(value) => handleInputChange("name", value)}
+                fullWidth={true}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
               <TextArea
-                  label="Description"
-                  value={device.description}
-                  onChange={(value) => handleInputChange("description", value)}
-                  fullWidth={true}
-                />
-              </label>
-            </div>
-            <button  className="mt-2 px-4 py-2 bg-green-500 text-white rounded-md" type="submit">Save</button>
-          </form>
-        ) : <div>
+                label="Description"
+                value={device.description}
+                onChange={(value) => handleInputChange("description", value)}
+                fullWidth={true}
+              />
+            </label>
+          </div>
+          <button className="mt-2 px-4 py-2 bg-green-500 text-white rounded-md" type="submit">Save</button>
+        </form>
+      ) : <div>
         <h1>
           <strong>{device.name}</strong>
         </h1>
@@ -95,7 +92,7 @@ export default function DeviceDashboard({ device }) {
           </div>
         </div>
       </div>}
-    
+
     </div>
   );
 }

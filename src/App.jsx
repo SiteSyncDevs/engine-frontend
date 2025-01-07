@@ -47,7 +47,7 @@ function App() {
               collapsed={collapsed}
               collapsedWidth="70px"
               width="250px"
-              className="h-[calc(100vh-64px)] shadow-lg"
+              className={isMobile ? "bg-gray-800 bg-opacity-90" : ""}
               toggled={sidebarOpen}
               onBackdropClick={closeSidebar}
               breakPoint="sm"

@@ -42,6 +42,47 @@ export default function DeviceManagement() {
       console.error("Error fetching devices:", error);
     }
   };
+
+    // Sample test data
+    const testDevices = [
+      {
+        id: 1,
+        name: "Device 1",
+        dev_eui: "0001AABBCCDD",
+        join_eui: "001122334455",
+        app_key: "A1B2C3D4E5F6G7H8",
+        device_type: "Sensor",
+        last_seen: "2023-10-01 12:00:00",
+      },
+      {
+        id: 2,
+        name: "Device 2",
+        dev_eui: "0002AABBCCDD",
+        join_eui: "001122334456",
+        app_key: "A1B2C3D4E5F6G7H9",
+        device_type: "Actuator",
+        last_seen: "2023-10-01 13:00:00",
+      },
+      {
+        id: 3,
+        name: "Device 3",
+        dev_eui: "0003AABBCCDD",
+        join_eui: "001122334457",
+        app_key: "A1B2C3D4E5F6G7H0",
+        device_type: "Gateway",
+        last_seen: "2023-10-01 14:00:00",
+      },
+      {
+        id: 4,
+        name: "Device 4",
+        dev_eui: "0003AABBCCDD",
+        join_eui: "001122334457",
+        app_key: "A1B2C3D4E5F6G7H0",
+        device_type: "Gateway",
+        last_seen: "2023-10-01 14:00:00",
+      },
+    ];
+
   // Fetch devices when the component mounts
   useEffect(() => {
     const fetchDevices = async () => {
@@ -58,10 +99,9 @@ export default function DeviceManagement() {
   }, []); // Empty dependency array ensures this runs only once
   return (
     <div>
-      {/* <CustomButton handleSubmit={handleSubmit} label="Submit" /> */}
 
       <div className="p-4 md:p-8">
-      <LoRaDeviceTable devices={apiDevices} />
+      <LoRaDeviceTable devices={testDevices} />
 
       <div className="flex flex-col md:flex-row gap-4 mt-4">
         <CustomButton
