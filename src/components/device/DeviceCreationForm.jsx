@@ -16,7 +16,7 @@ export default function DeviceCreationForm({ device, deviceProfiles, errors, sca
   const [device_profile_id, setDeviceProfile] = useState(device.deviceProfile);
   const [alert, setAlert] = useState(null);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
       const apiData = {
         device_name: name,
@@ -26,14 +26,12 @@ export default function DeviceCreationForm({ device, deviceProfiles, errors, sca
         device_profile_id: device_profile_id,
         description: description,
       };
-      ApiHandler.post("/routers/v1/device", apiData).then((data) => {
-        console.log("Data:", data);
-
-        setAlert({
-          type: "success",
-          message: "Device Created Successfully.",
-        });
-      });
+      const data = await ApiHandler.post("/routes/v1/device", apiData);
+      console.log("Device Create Form data rep: ", data);
+      setAlert({
+        type: "success",
+        message: "Device Created Successfully."
+      })
     } catch (error) {
       console.error("Error creating device:", error);
       setAlert({

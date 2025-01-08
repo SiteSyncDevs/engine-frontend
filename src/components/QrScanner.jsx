@@ -6,8 +6,8 @@ export default function QrScanner({ handleScan }) {
 
   const handleResult = (result) => {
     if (result) {
-      setIsScanning(false);  // Stop scanning when result is found
-      handleScan(result);    // Pass result to parent
+      setIsScanning(false);  
+      handleScan(result);
     }
   };
 

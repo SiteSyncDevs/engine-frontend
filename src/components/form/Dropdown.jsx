@@ -3,9 +3,15 @@ import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
+import FormHelperText from '@mui/material/FormHelperText';
 import Select from "@mui/material/Select";
 
-export default function Dropdown({ options, label, value, onChange, showTopLabel=false, topLabel, maxWidth = 300 }) {
+import { useTheme } from '@mui/material/styles';
+
+export default function Dropdown({ options, label, value, onChange, showTopLabel = false, topLabel, maxWidth = 300, error = false, helperText = "" }) {
+
+  const theme = useTheme();
+
   const handleChange = (event) => {
     if (onChange) {
       onChange(event.target.value);
@@ -23,6 +29,7 @@ export default function Dropdown({ options, label, value, onChange, showTopLabel
           value={value || ""}
           label={label}
           onChange={handleChange}
+          error={error}
         >
           {options.map((option) => (
             <MenuItem key={option.value} value={option.value}>
@@ -30,6 +37,9 @@ export default function Dropdown({ options, label, value, onChange, showTopLabel
             </MenuItem>
           ))}
         </Select>
+
+        { /* this is a default error helper text */}
+        <FormHelperText sx={{ color: error ? theme.palette.error.main : 'inherit' }} >{helperText}</FormHelperText>
       </FormControl>
     </Box>
   );

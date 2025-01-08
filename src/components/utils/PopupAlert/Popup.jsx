@@ -32,7 +32,6 @@ export default function PopupAlert({
 
   if (!isVisible) return null;
 
-  // background color for popups (can change)
   const bgColor = {
     info: "bg-blue-100 border-blue-500 text-blue-800",
     success: "bg-green-100 border-green-500 text-green-800",
@@ -49,7 +48,7 @@ export default function PopupAlert({
 
   return (
     <div
-      className={`fixed top-4 right-4 max-w-sm w-full shadow-lg rounded-lg pointer-events-auto ${bgColor} z-50`}
+      className={`fixed top-4 right-4 max-w-sm w-full md:w-auto shadow-lg rounded-lg pointer-events-auto ${bgColor} z-50`}
     >
       <div className="p-4">
         <div className="flex items-start">

@@ -13,16 +13,16 @@ export default function Alert({ children, variant = "info" }) {
   };
 
   const iconComponents = {
-    info: <InfoOutlinedIcon fontSize="small"/>,
+    info: <InfoOutlinedIcon fontSize="small" />,
     warning: <WarningAmberOutlinedIcon fontSize="small" />,
     error: <ErrorOutlineIcon fontSize="small" />,
-    success: <CheckCircleOutlineIcon fontSize="small" className="h-5 w-5"/>,
+    success: <CheckCircleOutlineIcon fontSize="small" className="h-5 w-5" />,
   };
 
   return (
-    <div className={`${baseClasses} ${variantClasses[variant]}`}>
-     {iconComponents[variant]}
-      <div>{children}</div>
+    <div className={`${baseClasses} ${variantClasses[variant]} w-full md:w-auto`}>
+      {iconComponents[variant]}
+      <div className="flex-1">{children}</div>
     </div>
   );
 }

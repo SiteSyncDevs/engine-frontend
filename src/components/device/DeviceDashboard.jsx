@@ -5,7 +5,6 @@ import ApiHandler from "../../api/ApiHandler";
 import EditIcon from '@mui/icons-material/Edit';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-
 export default function DeviceDashboard({ device }) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -13,7 +12,6 @@ export default function DeviceDashboard({ device }) {
   });
 
   const handleInputChange = (name, value) => {
-
     setFormData({
       ...formData,
       [name]: value,
@@ -39,8 +37,6 @@ export default function DeviceDashboard({ device }) {
     <div>
       <button className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-md" onClick={handleToggleEdit}>
         {isEditing ? 'Cancel' : 'Edit'}
-
-
         {isEditing ? <CancelIcon className="ml-2" /> : <EditIcon className="ml-2" />}
       </button>
       {isEditing ? (
@@ -92,7 +88,6 @@ export default function DeviceDashboard({ device }) {
           </div>
         </div>
       </div>}
-
     </div>
   );
 }

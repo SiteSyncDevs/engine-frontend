@@ -40,18 +40,13 @@ function a11yProps(index) {
 
 export default function CreateDevice() {
   const [value, setValue] = React.useState(0);
-
-  const handleChange = (newValue) => {
-    setValue(newValue);
-  };
-
   const [deviceProfiles, setDeviceProfiles] = useState([]);
   const [open, setOpen] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [scanData, setScanData] = useState(null);
   const [alert, setAlert] = useState(null);
   const isMobile = useMediaQuery("(max-width:600px)");
-
+  
   const [device, setDevice] = useState({
     appKey: "",
     devEUI: "",
@@ -59,7 +54,7 @@ export default function CreateDevice() {
     deviceProfile: "",
     deviceName: "",
   });
-
+  
   const [errors, setErrors] = useState({
     appKey: false,
     devEUI: false,
@@ -67,7 +62,7 @@ export default function CreateDevice() {
     deviceProfile: false,
     deviceName: false,
   });
-
+  
   useEffect(() => {
     const fetchDeviceProfiles = async () => {
       console.log("Fetching device profiles...");
@@ -79,16 +74,20 @@ export default function CreateDevice() {
           value: profile.id,
           label: profile.name,
         }));
-
+        
         setDeviceProfiles(transformedProfiles);
         console.log("Device Profiles:", transformedProfiles);
       } catch (error) {
         console.error("Failed to fetch device profiles:", error);
       }
     };
-
+    
     fetchDeviceProfiles();
   }, []);
+  
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const handleOpen = () => {
     setOpen(true);
