@@ -55,8 +55,6 @@ export default function DeviceDetail() {
     setValue(newValue);
   };
 
-
-
     // Fetch devices when the component mounts
     useEffect(() => {
       const fetchDevices = async () => {

@@ -52,8 +52,8 @@ export default function Dashboard() {
   }));
 
   return (
-    <div className="flex justify-center h-full">
-      <Box sx={{ width: "75%" }} className="">
+    <div className="flex justify-center h-full p-4 md:p-8 overflow-auto">
+      <Box className="w-full md:w-3/4">
         <Stack spacing={2}>
           <DeviceStatus />
           <ConnectionStatus connections={connections} />

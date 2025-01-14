@@ -1,21 +1,22 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import TextInput from "../../form/TextInput";
-import FileUpload from "../../form/FileUpload";
-import { useEffect } from "react";
-  import ApiHandler from "../../../api/ApiHandler";
 import {
   Box,
   Typography,
   Button,
-  Card,
-  CardContent,
   Collapse,
   Divider,
   FormControlLabel,
   Switch,
 } from "@mui/material";
 import Dropdown from "../../form/Dropdown";
+import ApiHandler from "../../../api/ApiHandler";
+import PopupAlert from "../../utils/PopupAlert/Popup";
+
 export default function LogixPlcConnection() {
+  const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
   const [useAuthentication, setUseAuthentication] = useState(false);
   const [friendlyName, setFriendlyName] = useState("");
   const [plc_ip, setplc_ip] = useState("");
@@ -23,10 +24,12 @@ export default function LogixPlcConnection() {
   const [plcModel, setPlcModel] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [alert, setAlert] = useState(null);
+
+  const plcOptions = [{ value: "Logix", label: "Logix" }];
+
   //const [plcOptions, setPlcOptions] = useState([]);
-
-
-  
 
   // useEffect(() => {
   //   const fetchPlcOptions = async () => {
@@ -40,11 +43,26 @@ export default function LogixPlcConnection() {
 
   //   fetchPlcOptions();
   // }, []);
-  const plcOptions = [
-    { value: "Logix", label: "Logix" }
-  ];
-  const handleSubmit = async () => {
 
+
+  const handleSubmit = async () => {
+    const newErrors = {};
+
+    if (!friendlyName) newErrors.friendlyName = "Friendly Name is required";
+    if (!plc_ip) newErrors.plc_ip = "PLC IP is required";
+    if (!plc_port) newErrors.plc_port = "PLC Port is required";
+    if (!plcModel) newErrors.plcModel = "PLC Type is required";
+    if (useAuthentication) {
+      if (!username) newErrors.username = "Username is required";
+      if (!password) newErrors.password = "Password is required";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setIsLoading(true);
 
     const formData = {
       id: 0,
@@ -57,23 +75,35 @@ export default function LogixPlcConnection() {
     };
 
     try {
-          const response = await ApiHandler.post("/routers/v1/connections", {
-            formData
-      });
-      console.log("Connection created successfully:", response);
-      //then navigate to status page
+      const response = await ApiHandler.post("/routers/v1/connections", formData);
+      console.log("Response data from LogixPIcConnections: ", response);
+
+      // navigate to status page
+      navigate("/connections#");
     } catch (error) {
-      console.error("Failed to create connection device:",formData, error);
+      console.error("Failed to create connection to device: ", formData, error);
+      setAlert({
+        type: "error",
+        message: "Error Creating Connection. Please Try again."
+      })
+    } finally {
+      setIsLoading(false);
     }
-
-    console.log("Form Data:", formData);
-
-    // You can now send this `formData` object to an API or handle it as needed
   };
 
   return (
     <Box sx={{ padding: 3 }}>
-      {/* Styled Title */}
+
+      {/* Popup Alert */}
+      {alert && (
+        <PopupAlert
+          message={alert.message}
+          type={alert.type}
+          onClose={() => setAlert(null)}
+        />
+      )}
+
+      {/* Title */}
       <Typography variant="h4" gutterBottom>
         Create a PLC Connection
       </Typography>
@@ -86,22 +116,42 @@ export default function LogixPlcConnection() {
           name="name"
           onChange={(newValue) => {
             setFriendlyName(newValue);
+            setErrors((prev) => ({ ...prev, friendlyName: "" }))
           }}
+          error={!!errors.friendlyName}
+          helperText={errors.friendlyName}
         />
-        <Dropdown topLabel="PLC Type" options={plcOptions} value={plcModel} showTopLabel={true} onChange={(value) => setPlcModel(value)}/>
+        <Dropdown
+          topLabel="PLC Type"
+          options={plcOptions}
+          value={plcModel}
+          showTopLabel={true}
+          onChange={(value) => {
+            setPlcModel(value);
+            setErrors((prev) => ({ ...prev, plcModel: "" }));
+          }}
+          error={!!errors.plcModel}
+          helperText={errors.plcModel}
+        />
         <TextInput
           label="PLC IP"
           name="name"
           onChange={(newValue) => {
             setplc_ip(newValue);
+            setErrors((prev) => ({ ...prev, plc_ip: "" }));
           }}
+          error={!!errors.plc_ip}
+          helperText={errors.plc_ip}
         />
         <TextInput
           label="PLC Port"
           name="name"
           onChange={(newValue) => {
             setplc_port(newValue);
+            setErrors((prev) => ({ ...prev, plc_port: "" }));
           }}
+          error={!!errors.plc_port}
+          helperText={errors.plc_port}
         />
 
         {/* Use Authentication Toggle */}
@@ -123,7 +173,10 @@ export default function LogixPlcConnection() {
               name="username"
               onChange={(newValue) => {
                 setUsername(newValue);
+                setErrors((prev) => ({ ...prev, username: "" }));
               }}
+              error={!!errors.username}
+              helperText={errors.username}
             />
             <TextInput
               label="Password"
@@ -131,7 +184,10 @@ export default function LogixPlcConnection() {
               name="password"
               onChange={(newValue) => {
                 setPassword(newValue);
+                setErrors((prev) => ({ ...prev, password: "" }))
               }}
+              error={!!errors.password}
+              helperText={errors.password}
             />
           </Box>
         </Collapse>
@@ -141,9 +197,17 @@ export default function LogixPlcConnection() {
         variant="contained"
         color="primary"
         onClick={handleSubmit}
-        sx={{ marginTop: 3 }}
+        disabled={isLoading}
+        sx={{ marginTop: 3 }}c
       >
-        Submit
+        {isLoading ? (
+          <>
+            <CircularProgress size={24} sx={{ marginRight: 1 }} color="inherit" />
+            Creating...
+          </>
+        ) : (
+          "Submit"
+        )}
       </Button>
     </Box>
   );
