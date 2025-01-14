@@ -26,7 +26,7 @@ export default function CreateDeviceForm({ device, deviceProfiles }) {
 
   const handleSubmit = async () => {
     try {
-      console.log("clicked")
+      console.log("clicked");
       const apiData = {
         device_name: name,
         dev_eui: devEui,

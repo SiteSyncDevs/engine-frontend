@@ -25,8 +25,8 @@ export default function Dropdown({
   //   return <p>loading</p>; // Or return a placeholder element, e.g., <p>Loading options...</p>
   // }
   return (
-    <Box sx={{ minWidth: 120, maxWidth: maxWidth }}>
-      {topLabel && <h1 className="mb-1">{topLabel}</h1>}
+    <Box sx={{ minWidth: 120, maxWidth: maxWidth, width: 400 }}>
+        { topLabel && <h1 className="mb-1">{topLabel}</h1>}
       <FormControl fullWidth>
         <InputLabel id={`${label}-select-label`}>{label}</InputLabel>
         <Select

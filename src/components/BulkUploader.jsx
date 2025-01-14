@@ -8,7 +8,7 @@ import ApiHandler from "../api/ApiHandler";
 import { Api } from "@mui/icons-material";
 import Dropdown from "./form/Dropdown";
 
-export default function BulkUploader({ deviceProfiles }) {
+export default function BulkUploader({deviceProfiles}) {
   const [devices, setDevices] = useState([]);
   const [selectedDeviceProfile, setSelectedDeviceProfile] = useState(null);
   const [filename, setFilename] = useState("");
@@ -35,13 +35,10 @@ export default function BulkUploader({ deviceProfiles }) {
     devices.forEach(async (device) => {
       try {
         console.log("Device:", device);
-        console.log("Selected Device Profile:", selectedDeviceProfile);
-        const newDevice = {
-          ...device,
-          device_profile_id: selectedDeviceProfile,
-        }
-        // device.deviceProfileId = selectedDeviceProfile;
-        const response = await ApiHandler.post("/routers/v1/device", newDevice);
+        device.deviceProfileId = selectedDeviceProfile;
+        const response = await ApiHandler.post("/routers/v1/device", {
+          device
+        });
         console.log("Device uploaded successfully:", response);
       } catch (error) {
         console.error("Failed to upload device:", newDevice, error);
