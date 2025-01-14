@@ -13,6 +13,7 @@ export default function LoRaDeviceTable({
   showLastSeen = true,
   showJoinJeys = false,
   showDeviceProfile = true,
+  allowClick = true,
 }) {
   const navigate = useNavigate();
 
@@ -46,12 +47,12 @@ export default function LoRaDeviceTable({
         <TableBody>
           {devices.map((device) => (
             <TableRow
-              key={device.id}
-              sx={{
-                "&:last-child td, &:last-child th": { border: 0 },
-                cursor: "pointer", // Add pointer cursor to indicate clickable rows
-              }}
-              onClick={() => handleRowClick(device.dev_eui)} // Navigate on row click
+            key={device.id}
+            sx={{
+              "&:last-child td, &:last-child th": { border: 0 },
+              cursor: allowClick ? "pointer" : "default", // Add pointer cursor if clickable
+            }}
+            onClick={allowClick ? () => handleRowClick(device.dev_eui) : undefined} // Conditionally add onClick
             >
               <TableCell component="th" scope="row">
                 {device.name}

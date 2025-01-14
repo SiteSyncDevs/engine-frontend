@@ -1,5 +1,5 @@
-import BulkUploader from "../components/BulkUploader";
 import React, { useState, useEffect } from "react";
+import BulkUploader from "../components/BulkUploader";
 import { Modal, Button, useMediaQuery } from "@mui/material";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import ApiHandler from "../api/ApiHandler";
@@ -40,12 +40,8 @@ function a11yProps(index) {
 
 export default function CreateDevice() {
   const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
   const [deviceProfiles, setDeviceProfiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Added loading state
   const [open, setOpen] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [scanData, setScanData] = useState(null);
@@ -58,13 +54,6 @@ export default function CreateDevice() {
     deviceProfile: "",
     deviceName: "",
   });
-  // const [appKey, setAppKey] = useState("");
-  // const [devEUI, setDevEUI] = useState("");
-
-  // const [appEui, setAppEui] = useState("");
-  // const [deviceProfile, setDeviceProfile] = useState("");
-
- 
 
   useEffect(() => {
     const fetchDeviceProfiles = async () => {
@@ -77,17 +66,18 @@ export default function CreateDevice() {
           value: profile.id,
           label: profile.name,
         }));
-
         setDeviceProfiles(transformedProfiles);
         console.log("Device Profiles:", transformedProfiles);
+        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch device profiles:", error);
+      } finally {
+        // setIsLoading(false); // Update loading state
       }
     };
 
     fetchDeviceProfiles();
   }, []);
-
 
   const handleOpen = () => {
     setOpen(true);
@@ -105,8 +95,8 @@ export default function CreateDevice() {
   };
 
   const generateDeviceName = (deviceProfileName) => {
-    //get last 4 characters of devEUI
-    const lastFour = devEUI.slice(-4);
+    const lastFour = device.devEUI.slice(-4); // Last 4 characters of devEUI
+    console.log(`${deviceProfileName}-${lastFour}`)
     return `${deviceProfileName}-${lastFour}`;
   };
 
@@ -118,26 +108,16 @@ export default function CreateDevice() {
 
       const parts = scanLocal.split(":");
 
-      // @TODO: Validate the QR code data
       if (parts.length !== 4) {
         console.error("Invalid QR code data");
         return;
       }
+
       const app_key = parts[0];
       const dev_eui = parts[1];
       const deviceProfileName = parts[2];
       const join_eui = parts[3];
-      // const apiData = {
-      //   device_name: "Test Device",
-      //   dev_eui: dev_eui,
-      //   join_eui: join_eui,
-      //   app_key: app_key,
-      //   device_profile_id: findDeviceProfileID(deviceProfile),
-      // };
-      // ApiHandler.post("/routers/v1/device", apiData).then((data) => {
-      //   console.log("Data:", data);
-      // });
-      // Assign the three parts to variables
+      console.log(app_key, dev_eui, deviceProfileName, join_eui);
       setDevice({
         appKey: app_key,
         devEUI: dev_eui,
@@ -145,15 +125,14 @@ export default function CreateDevice() {
         deviceProfile: findDeviceProfileID(deviceProfileName),
         deviceName: generateDeviceName(deviceProfileName),
       });
-      // setAppKey(app_key);
-      // setDevEUI(dev_eui);
-      // setDeviceName(generateDeviceName(deviceProfileName));
-      // setAppEui(join_eui);
-      // setDeviceProfile(findDeviceProfileID(deviceProfileName));
 
-      handleClose(); // Close both the scanner and the modal
+      handleClose(); // Close scanner and modal
     }
   };
+
+  if (isLoading) {
+    return <p>Loading device profiles...</p>; // Display loading message
+  }
 
   return (
     <div>
@@ -161,65 +140,19 @@ export default function CreateDevice() {
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={value}
-            onChange={handleChange}
+            onChange={(event, newValue) => setValue(newValue)}
             aria-label="basic tabs example"
           >
             <Tab label="Add Device" {...a11yProps(0)} />
             <Tab label="Upload" {...a11yProps(1)} />
-      
-            {/* <Tab label="Ole Fashioned Way" {...a11yProps(2)} /> */}
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={1}>
-          <BulkUploader   deviceProfiles={deviceProfiles}/>
+          <BulkUploader deviceProfiles={deviceProfiles} />
         </CustomTabPanel>
-        {/* <CustomTabPanel value={value} index={1}>
-          <Button onClick={handleOpen}>Open modal</Button>
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
-                backgroundColor: "rgba(0, 0, 0, 0.85)", // Dark background
-              }}
-            >
-              <div
-                style={{
-                  width: isMobile ? "100%" : "80%",
-                  height: isMobile ? "100%" : "80%",
-                  backgroundColor: "white",
-                  borderRadius: isMobile ? "0" : "8px",
-                  overflow: "hidden",
-                  position: "relative",
-                }}
-              >
-                {isScanning && (
-                  <Scanner
-                    onScan={handleScan}
-                    onError={(error) =>
-                      console.error("QR Scanner Error:", error)
-                    }
-                  />
-                )}
-              </div>
-            </div>
-          </Modal>
-          <h1>QR Code Data: {scanData}</h1>
-          <h2>App Key: {appKey}</h2>
-          <h2>Dev EUI: {devEUI}</h2>
-          <h2>App EUI: {appEui}</h2>
-          <h2>Device Profile: {deviceProfile}</h2>{" "}
-        </CustomTabPanel> */}
         <CustomTabPanel value={value} index={0}>
-        <Button onClick={handleOpen}>Scan QR Code</Button>
-        <Modal
+          <Button onClick={handleOpen}>Scan QR Code</Button>
+          <Modal
             open={open}
             onClose={handleClose}
             aria-labelledby="modal-modal-title"
@@ -258,8 +191,6 @@ export default function CreateDevice() {
           <CreateDeviceForm device={device} deviceProfiles={deviceProfiles} />
         </CustomTabPanel>
       </Box>
-
-      {/* <BulkUploader /> */}
     </div>
   );
 }

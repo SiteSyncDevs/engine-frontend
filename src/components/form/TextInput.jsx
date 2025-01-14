@@ -12,6 +12,10 @@ const TextInput = ({
 }) => {
   const [inputValue, setInputValue] = useState(value || "");
 
+  useEffect(() => {
+    setInputValue(value || "");
+  }, [value]);
+  
   // Handle changes to the input value
   const handleInputChange = (event) => {
     const newValue = event.target.value;

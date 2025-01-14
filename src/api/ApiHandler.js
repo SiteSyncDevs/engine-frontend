@@ -1,14 +1,13 @@
-import axios from 'axios';
+import axios from "axios";
 
 // Base URL for the API
-const BASE_URL = 'http://localhost:8000';
-
+const BASE_URL = `http://localhost:8000`;
 class ApiHandler {
   constructor() {
     this.client = axios.create({
       baseURL: BASE_URL,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
   }
@@ -29,7 +28,7 @@ class ApiHandler {
   // POST request
   async post(endpoint, data = {}, config = {}) {
     try {
-        console.log(data)
+      console.log(data);
       const response = await this.client.post(endpoint, data, config);
       return response.data;
     } catch (error) {
@@ -70,11 +69,11 @@ class ApiHandler {
   // Handle errors
   handleError(error) {
     if (error.response) {
-      console.error('Error Response:', error.response.data);
+      console.error("Error Response:", error.response.data);
     } else if (error.request) {
-      console.error('Error Request:', error.request);
+      console.error("Error Request:", error.request);
     } else {
-      console.error('Error Message:', error.message);
+      console.error("Error Message:", error.message);
     }
     throw error;
   }

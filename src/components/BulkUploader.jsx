@@ -8,7 +8,7 @@ import ApiHandler from "../api/ApiHandler";
 import { Api } from "@mui/icons-material";
 import Dropdown from "./form/Dropdown";
 
-export default function BulkUploader(deviceProfiles) {
+export default function BulkUploader({ deviceProfiles }) {
   const [devices, setDevices] = useState([]);
   const [selectedDeviceProfile, setSelectedDeviceProfile] = useState(null);
   const [filename, setFilename] = useState("");
@@ -32,18 +32,19 @@ export default function BulkUploader(deviceProfiles) {
   };
 
   const handleSubmit = () => {
-
     devices.forEach(async (device) => {
       try {
         console.log("Device:", device);
-        device.deviceProfileId = selectedDeviceProfile;
-        const response = await ApiHandler.post("/routers/v1/device", {
-          device,
-          deviceProfileId: selectedDeviceProfile.value,
-        });
+        console.log("Selected Device Profile:", selectedDeviceProfile);
+        const newDevice = {
+          ...device,
+          device_profile_id: selectedDeviceProfile,
+        }
+        // device.deviceProfileId = selectedDeviceProfile;
+        const response = await ApiHandler.post("/routers/v1/device", newDevice);
         console.log("Device uploaded successfully:", response);
       } catch (error) {
-        console.error("Failed to upload device:", device, error);
+        console.error("Failed to upload device:", newDevice, error);
       }
     });
     // const formData = {
@@ -97,6 +98,7 @@ export default function BulkUploader(deviceProfiles) {
     const reader = new FileReader();
 
     const records = parseRawCSV(fileContents);
+    console.log("Records:", records);
     setDevices(records);
   };
 
@@ -137,9 +139,9 @@ export default function BulkUploader(deviceProfiles) {
           });
 
           return {
-            name: record["name"] || "Unknown Device",
+            device_name: record["name"] || "Unknown Device",
             dev_eui: record["dev_eui"],
-            app_eui: record["join_eui"],
+            join_eui: record["join_eui"],
             app_key: record["app_key"],
           };
         });
@@ -156,11 +158,11 @@ export default function BulkUploader(deviceProfiles) {
       <FileUpload label="Upload CSV template" onFileUpload={handleFileUpload} />
       <br />
       <button
-          onClick={handleDownloadCSV}
-          className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-md"
-        >
-          Download Upload Template
-        </button>
+        onClick={handleDownloadCSV}
+        className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-md"
+      >
+        Download Upload Template
+      </button>
       {devices.length > 0 && (
         <div>
           {/* <pre>{JSON.stringify(devices, null, 2)}</pre> */}
@@ -171,6 +173,7 @@ export default function BulkUploader(deviceProfiles) {
                 showLastSeen={false}
                 showDeviceProfile={false}
                 showJoinJeys={true}
+                allowClick={false}
               />
               <br />
 

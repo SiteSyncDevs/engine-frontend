@@ -1,76 +1,54 @@
 import { useState, useEffect } from "react";
-import { TextField, Button } from "@mui/material";
 import CustomButton from "../form/CustomButton";
 import TextInput from "../form/TextInput";
 import Dropdown from "../form/Dropdown";
 import ApiHandler from "../../api/ApiHandler";
-export default function DeviceCreationForm(device, deviceProfiles) {
- console.log(deviceProfiles.length);
-  const [selectedDeviceProfile, setSelectedDeviceProfile] = useState(null);
 
+export default function CreateDeviceForm({ device, deviceProfiles }) {
+  const [selectedDeviceProfile, setSelectedDeviceProfile] = useState(
+    device.deviceProfile || ""
+  );
+  const [name, setName] = useState(device.deviceName || "");
+  const [description, setDescription] = useState(device.description || "");
+  const [devEui, setDevEUI] = useState(device.devEUI || "");
+  const [joinEui, setJoinEUI] = useState(device.appEui || "");
+  const [appKey, setAppKey] = useState(device.appKey || "");
 
-  const [name, setName] = useState(device.name);
-  const [description, setDescription] = useState();
-  const [dev_eui, setDevEUI] = useState(device.devEUI);
-  const [join_eui, setJoinEUI] = useState(device.appEui);
-  const [app_key, setAppKey] = useState(device.appKey);
-  const [device_profile_id, setDeviceProfile] = useState(device.deviceProfile);
-  //const [deviceProfiles, setDeviceProfiles] = useState([]);
- 
-  // useEffect(() => {
-  //   const fetchDeviceProfiles = async () => {
-  //     try {
-  //       const deviceProfilesRes = await ApiHandler.get(
-  //         "/routers/v1/device-profile"
-  //       );
-  //       const transformedProfiles = deviceProfilesRes.map((profile) => ({
-  //         value: profile.id,
-  //         label: profile.name,
-  //       }));
+  // Sync state with device prop when it changes
+  useEffect(() => {
+    setName(device.deviceName || "");
+    setDescription(device.description || "");
+    setDevEUI(device.devEUI || "");
+    setJoinEUI(device.appEui || "");
+    setAppKey(device.appKey || "");
+    setSelectedDeviceProfile(device.deviceProfile || "");
+  }, [device]);
 
-  //       setDeviceProfiles(transformedProfiles);
-  //       console.log("Device Profiles:", transformedProfiles);
-  //     } catch (error) {
-  //       console.error("Failed to fetch device profiles:", error);
-  //     }
-  //   };
-
-  //   fetchDeviceProfiles();
-  // }, []);
   const handleSubmit = async () => {
     try {
-
-        const apiData = {
-                device_name: name,
-                dev_eui: dev_eui,
-                join_eui: join_eui,
-                app_key: app_key,
-                device_profile_id:device_profile_id,
-                description: description
-              };
-              ApiHandler.post("/routers/v1/device", apiData).then((data) => {
-                console.log("Data:", data);
-              });
-
-    //   const payload = {
-    //     name,
-    //     description,
-    //     dev_eui,
-    //     join_eui,
-    //     app_key,
-    //     device_profile_id,
-    //   };
-    //   console.log("Submitting device:", payload);
-    //   // Add your device creation logic here
+      console.log("clicked")
+      const apiData = {
+        device_name: name,
+        dev_eui: devEui,
+        join_eui: joinEui,
+        app_key: appKey,
+        device_profile_id: selectedDeviceProfile,
+        // description: description,
+      };
+      await ApiHandler.post("/routers/v1/device", apiData);
+      console.log("Device created successfully:", apiData);
     } catch (error) {
       console.error("Error creating device:", error);
     }
   };
 
+  if (!Array.isArray(deviceProfiles) || deviceProfiles.length === 0) {
+    return <p>Loading device profiles...</p>;
+  }
+
   return (
-    <div className="device-creation-form ">
-      {/* Device Name */}
-      <div className="w-1/3 ">
+    <div className="device-creation-form">
+      <div className="w-1/3">
         <TextInput
           label="Device Name"
           value={name}
@@ -78,42 +56,35 @@ export default function DeviceCreationForm(device, deviceProfiles) {
           fullWidth={true}
         />
       </div>
-      {/* Dev EUI and Join EUI in a Flex Row */}
-      <div className="flex flex-row gap-4 mt-2  w-1/3  justify-between">
+      <div className="flex flex-row gap-4 mt-2 w-1/3 justify-between">
         <TextInput
           label="Dev EUI"
-          value={dev_eui}
+          value={devEui}
           onChange={(e) => setDevEUI(e.target.value)}
-          //   fullWidth
         />
         <TextInput
           label="Join EUI"
-          value={join_eui}
+          value={joinEui}
           onChange={(e) => setJoinEUI(e.target.value)}
-          //   fullWidth
         />
       </div>
       <div className="w-1/3 mb-6">
         <TextInput
           label="App Key"
-          value={name}
+          value={appKey}
           onChange={(e) => setAppKey(e.target.value)}
           fullWidth={true}
         />
         <div className="mt-4" />
-        
-        {deviceProfiles.length === undefined ? (
-          <div className="text-red-500">No device profiles available</div>
-        ) : <Dropdown
+        <Dropdown
           options={deviceProfiles}
           topLabel="Device Profile"
           value={selectedDeviceProfile}
           onChange={(value) => setSelectedDeviceProfile(value)}
           maxWidth={525}
-        /> }
-        
+        />
       </div>
-      <CustomButton onClick={handleSubmit} label="Create Device" />
+      <CustomButton handleSubmit={handleSubmit} label="Create Device" />
     </div>
   );
 }
