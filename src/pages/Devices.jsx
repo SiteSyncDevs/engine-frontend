@@ -101,7 +101,7 @@ export default function DeviceManagement() {
     <div>
 
       <div className="p-4 md:p-8">
-      <LoRaDeviceTable devices={testDevices} />
+      <LoRaDeviceTable devices={apiDevices} />
 
       <div className="flex flex-col md:flex-row gap-4 mt-4">
         <CustomButton
