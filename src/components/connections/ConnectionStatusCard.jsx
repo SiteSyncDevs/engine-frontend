@@ -7,6 +7,7 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import CircleIcon from "@mui/icons-material/Circle";
 import Tooltip from "@mui/material/Tooltip";
+import { useMediaQuery } from "@mui/material";
 
 export default function ConnectionStatusCard({
   connectionName,
@@ -16,15 +17,17 @@ export default function ConnectionStatusCard({
   connected,
   lastUpdated,
 }) {
+  const isMobile = useMediaQuery("(max-width:600px)");
+
   return (
     <Card
       variant="outlined"
-      sx={{ maxWidth: 360, borderRadius: 2, height: 175 }}
+      className={`border-radius-2 ${isMobile ? "w-full" : "max-w-xs"} h-44`}
     >
-      <Box sx={{ p: 2 }}>
+      <Box className="p-2">
         <Stack
           direction="row"
-          sx={{ justifyContent: "space-between", alignItems: "center" }}
+          className="justify-between items-center"
         >
           <Typography gutterBottom variant="h5" component="div">
             {connectionName}
@@ -32,28 +35,23 @@ export default function ConnectionStatusCard({
           <Tooltip title={`Last updated: ${lastUpdated}`} arrow>
             <CircleIcon
               sx={{
-                color: connected ? "green" : "red",
-                height: 15,
-                marginBottom: 1,
+                color: connected ? "green" : "red"
               }}
+              className={`h-4 mb-1`}
             />
           </Tooltip>
         </Stack>
 
         <Box
-          sx={{
-            minHeight: 48, // Adjust as needed to ensure consistent space
-            display: "flex",
-            alignItems: "center",
-          }}
+          className="min-h-12 flex items-center"
         >
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          <Typography variant="body2" className="text-gray-500">
             {connectionDescription}
           </Typography>
         </Box>
       </Box>
       <Divider />
-      <Box sx={{ p: 2 }}>
+      <Box className="p-2">
         <Stack direction="row" spacing={1}>
           <Chip label={connectionProtocol} size="small" />
           <Chip label={address} size="small" />

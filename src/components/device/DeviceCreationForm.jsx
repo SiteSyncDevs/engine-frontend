@@ -1,44 +1,43 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import CustomButton from "../form/CustomButton";
 import TextInput from "../form/TextInput";
 import Dropdown from "../form/Dropdown";
 import ApiHandler from "../../api/ApiHandler";
+import PopupAlert from "../utils/PopupAlert/Popup";
+import TextArea from "../form/TextArea";
 
-export default function CreateDeviceForm({ device, deviceProfiles }) {
-  const [selectedDeviceProfile, setSelectedDeviceProfile] = useState(
-    device.deviceProfile || ""
-  );
-  const [name, setName] = useState(device.deviceName || "");
-  const [description, setDescription] = useState(device.description || "");
-  const [devEui, setDevEUI] = useState(device.devEUI || "");
-  const [joinEui, setJoinEUI] = useState(device.appEui || "");
-  const [appKey, setAppKey] = useState(device.appKey || "");
-
-  // Sync state with device prop when it changes
-  useEffect(() => {
-    setName(device.deviceName || "");
-    setDescription(device.description || "");
-    setDevEUI(device.devEUI || "");
-    setJoinEUI(device.appEui || "");
-    setAppKey(device.appKey || "");
-    setSelectedDeviceProfile(device.deviceProfile || "");
-  }, [device]);
+export default function DeviceCreationForm({ device, deviceProfiles, errors, scanData }) {
+  const [selectedDeviceProfile, setSelectedDeviceProfile] = useState(null);
+  const [name, setName] = useState(device.deviceName);
+  const [description, setDescription] = useState();
+  const [dev_eui, setDevEUI] = useState(device.devEUI);
+  const [join_eui, setJoinEUI] = useState(device.appEui);
+  const [app_key, setAppKey] = useState(device.appKey);
+  const [device_profile_id, setDeviceProfile] = useState(device.deviceProfile);
+  const [alert, setAlert] = useState(null);
 
   const handleSubmit = async () => {
     try {
-      console.log("clicked");
       const apiData = {
         device_name: name,
-        dev_eui: devEui,
-        join_eui: joinEui,
-        app_key: appKey,
-        device_profile_id: selectedDeviceProfile,
-        // description: description,
+        dev_eui: dev_eui,
+        join_eui: join_eui,
+        app_key: app_key,
+        device_profile_id: device_profile_id,
+        description: description,
       };
-      await ApiHandler.post("/routers/v1/device", apiData);
-      console.log("Device created successfully:", apiData);
+      const data = await ApiHandler.post("/routes/v1/device", apiData);
+      console.log("Device Create Form data rep: ", data);
+      setAlert({
+        type: "success",
+        message: "Device Created Successfully."
+      })
     } catch (error) {
       console.error("Error creating device:", error);
+      setAlert({
+        type: "error",
+        message: "Error Creating Device. Please Try again.",
+      });
     }
   };
 
@@ -47,44 +46,75 @@ export default function CreateDeviceForm({ device, deviceProfiles }) {
   }
 
   return (
-    <div className="device-creation-form">
-      <div className="w-1/3">
-        <TextInput
-          label="Device Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          fullWidth={true}
+    <>
+      {alert && (
+        <PopupAlert
+          message={alert.message}
+          type={alert.type}
+          onClose={() => setAlert(null)}
         />
+      )}
+      <div className="device-creation-form p-4">
+        {/* Device Name */}
+        <div className="w-full md:w-1/3 mb-4">
+          <TextInput
+            label="Device Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            fullWidth={true}
+            error={errors.deviceName}
+            helperText="Please enter the device name."
+          />
+        </div>
+        {/* Dev EUI and Join EUI in a Flex Row */}
+        <div className="flex flex-col md:flex-row gap-4 w-full md:w-1/3 mb-4">
+          <TextInput
+            label="Dev EUI"
+            value={dev_eui}
+            onChange={(e) => setDevEUI(e.target.value)}
+            fullWidth={true}
+            error={errors.devEUI}
+            helperText="Please enter the Dev EUI."
+          />
+          <TextInput
+            label="Join EUI"
+            value={join_eui}
+            onChange={(e) => setJoinEUI(e.target.value)}
+            fullWidth={true}
+            error={errors.appEui}
+            helperText="Please enter the Join EUI."
+          />
+        </div>
+        <div className="w-full md:w-1/3 mb-6">
+          <TextInput
+            label="App Key"
+            value={app_key}
+            onChange={(e) => setAppKey(e.target.value)}
+            fullWidth={true}
+            error={errors.appKey}
+            helperText="Please enter the App Key."
+          />
+          <div className="mt-4" />
+
+          {deviceProfiles.length === undefined ? (
+            <div className="text-red-500">No device profiles available</div>
+          ) : (
+            <Dropdown
+              options={deviceProfiles}
+              topLabel="Device Profile"
+              value={selectedDeviceProfile}
+              onChange={(value) => setSelectedDeviceProfile(value)}
+              maxWidth={525}
+              error={errors.deviceProfile}
+              helperText="Please select a device profile."
+            />
+          )}
+        </div>
+
+        <TextArea value={scanData} placeholder="Scan data will appear here" />
+
+        <CustomButton handleSubmit={handleSubmit} label="Create Device" />
       </div>
-      <div className="flex flex-row gap-4 mt-2 w-1/3 justify-between">
-        <TextInput
-          label="Dev EUI"
-          value={devEui}
-          onChange={(e) => setDevEUI(e.target.value)}
-        />
-        <TextInput
-          label="Join EUI"
-          value={joinEui}
-          onChange={(e) => setJoinEUI(e.target.value)}
-        />
-      </div>
-      <div className="w-1/3 mb-6">
-        <TextInput
-          label="App Key"
-          value={appKey}
-          onChange={(e) => setAppKey(e.target.value)}
-          fullWidth={true}
-        />
-        <div className="mt-4" />
-        <Dropdown
-          options={deviceProfiles}
-          topLabel="Device Profile"
-          value={selectedDeviceProfile}
-          onChange={(value) => setSelectedDeviceProfile(value)}
-          maxWidth={525}
-        />
-      </div>
-      <CustomButton handleSubmit={handleSubmit} label="Create Device" />
-    </div>
+    </>
   );
 }

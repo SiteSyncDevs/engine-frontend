@@ -7,8 +7,10 @@ const TextInput = ({
   onChange,
   placeholder,
   fullWidth = true,
-    password = false,
-    type = "text"
+  password = false,
+  type = "text",
+  error = false,
+  helperText = ""
 }) => {
   const [inputValue, setInputValue] = useState(value || "");
 
@@ -38,6 +40,8 @@ const TextInput = ({
         onChange={handleInputChange}
         fullWidth={fullWidth}
         variant="outlined"
+        error={error}
+        helperText={error ? helperText : ""}
       />
     </div>
   );

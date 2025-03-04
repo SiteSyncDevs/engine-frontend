@@ -43,23 +43,25 @@ function ConnectionOptionCard({ connectionType }) {
       className="border-2 border-gray-200 p-4 rounded-md cursor-pointer hover:shadow-lg transition"
       onClick={handleClick}
     >
-      {" "}
       <h3 className="font-bold text-lg">{connectionType.name}</h3>
       <p>{connectionType.desc}</p>
     </div>
   );
 }
+
 export default function ConnectionCreationViewer() {
   return (
-    // {connectionTypes.map((connectionType) => ( <ConnectionOptionCard key={connectionType.id} connectionType={connectionType} /> ))}
-    <div className="grid grid-cols-4 gap-4">
-      {/* <h1>Connection Creation</h1> */}
-      {connectionTypes.map((connectionType) => (
-        <ConnectionOptionCard
-          key={connectionType.id}
-          connectionType={connectionType}
-        />
-      ))}
+    <div className="h-[calc(100vh-16rem)] w-full">
+      <div className="h-full overflow-y-auto px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-4">
+          {connectionTypes.map((connectionType) => (
+            <ConnectionOptionCard
+              key={connectionType.id}
+              connectionType={connectionType}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
