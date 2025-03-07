@@ -24,7 +24,7 @@ export default function DeviceDashboard({ device }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    ApiHandler.put("/routers/v1/device", formData).then(response => {
+    ApiHandler.put("/api/v1/device", formData).then(response => {
       console.log("Response:", response);
     }).catch(error => {
       console.error("Error:", error);

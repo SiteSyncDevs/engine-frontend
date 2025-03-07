@@ -18,7 +18,7 @@ export default function KeyValueInput({device}) {
 
   useEffect(() => {
     const fetchAttributes = async () => {
-      const data = await ApiHandler.get(`/routers/v1/device-profile/${device.device_profile_id}/variables`);
+      const data = await ApiHandler.get(`/api/v1/device-profile/${device.device_profile_id}/variables`);
       setAttributes(data);
     }
     fetchAttributes();
@@ -43,7 +43,7 @@ export default function KeyValueInput({device}) {
 
   const handleSubmit = () => {
     console.log("Tags:", tags);
-    ApiHandler.post("/routers/v1/device/mappings/" + device.dev_eui, tags).then(response => {
+    ApiHandler.post("/api/v1/device/mappings/" + device.dev_eui, tags).then(response => {
       console.log("Response:", response);
     }).catch(error => {
       console.error("Error:", error);

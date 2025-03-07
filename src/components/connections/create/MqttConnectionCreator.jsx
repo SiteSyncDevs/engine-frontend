@@ -63,7 +63,7 @@ export default function MqttConnectionCreator() {
     };
 
     try {
-      const response = await ApiHandler.pose("/routes/v1/connections", formData);
+      const response = await ApiHandler.post("/api/v1/connections/create/mqtt", formData);
       console.log("Response data from MqttConnectionCreator: ", response);
 
       // navigate to status page

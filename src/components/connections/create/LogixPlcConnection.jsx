@@ -34,7 +34,7 @@ export default function LogixPlcConnection() {
   // useEffect(() => {
   //   const fetchPlcOptions = async () => {
   //     try {
-  //       const response = await ApiHandler.get("/routers/v1/connections/PLC/options");
+  //       const response = await ApiHandler.get("/api/v1/connections/PLC/options");
   //       setPlcOptions(response.data);
   //     } catch (error) {
   //       console.error("Failed to fetch PLC options:", error);
@@ -75,7 +75,7 @@ export default function LogixPlcConnection() {
     };
 
     try {
-      const response = await ApiHandler.post("/routers/v1/connections", formData);
+      const response = await ApiHandler.post("/api/v1/connections/create/control-logix", formData);
       console.log("Response data from LogixPIcConnections: ", response);
 
       // navigate to status page

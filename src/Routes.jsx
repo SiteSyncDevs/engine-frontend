@@ -5,7 +5,7 @@ import CreateDevice from "./pages/CreateDevice";
 import Connections from "./pages/Connections";
 import ConnectionCreatorRoot from "./components/connections/create/ConnectionCreatorRoot";
 import DeviceDetail from "./pages/DeviceDetail";
-
+import ConnectionTester from "./components/connections/test/ConnectionTester";
 const routes = [
   { path: "/", element: <Dashboard />, name: "Dashboard" },
   {
@@ -37,8 +37,11 @@ const routes = [
   {
     path: "/device/manage/:deviceId",
     element: <DeviceDetail  />,
-
   },
+  {
+    path: "/connections/test",
+    element: <ConnectionTester />,
+  }
 ];
 
 const AppRoutes = () => {

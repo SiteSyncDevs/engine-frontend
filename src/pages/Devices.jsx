@@ -4,7 +4,7 @@ import ApiHandler from "../api/ApiHandler";
 import { useState, useEffect } from "react";
 import CustomButton from "../components/form/CustomButton";
 import FileUpload from "../components/form/FileUpload";
-// const apiDevices = ApiHandler.get("/routers/v1/device").then((data) => {
+// const apiDevices = ApiHandler.get("/api/v1/device").then((data) => {
 //   console.log("Data:", data);
 // }
 // );
@@ -13,7 +13,7 @@ export default function DeviceManagement() {
 
   const handleSubmit = async () => {
     try {
-      const data = await ApiHandler.get("/routers/v1/device/mappings");
+      const data = await ApiHandler.get("/api/v1/device/mappings");
       console.log("Data:", data);
       //{
       //     "dev_eui": d['dev_eui'],
@@ -87,7 +87,7 @@ export default function DeviceManagement() {
   useEffect(() => {
     const fetchDevices = async () => {
       try {
-        const data = await ApiHandler.get("/routers/v1/device");
+        const data = await ApiHandler.get("/api/v1/device");
         console.log("Data:", data);
         setApiDevices(data);
       } catch (error) {

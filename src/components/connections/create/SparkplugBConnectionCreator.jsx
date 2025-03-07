@@ -69,7 +69,7 @@ export default function SparkplugBConnectionCreator() {
     };
 
     try {
-      const response = await ApiHandler.post("/routers/v1/connections", formData);
+      const response = await ApiHandler.post("/api/v1/connections/create/sparkplug", formData);
       console.log("Response data from SparkplugBConnectionCreator: ", response);
 
       // navigate to status page

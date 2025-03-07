@@ -36,7 +36,7 @@ export default function BulkUploader({deviceProfiles}) {
       try {
         console.log("Device:", device);
         device.deviceProfileId = selectedDeviceProfile;
-        const response = await ApiHandler.post("/routers/v1/device", {
+        const response = await ApiHandler.post("/api/v1/device", {
           device
         });
         console.log("Device uploaded successfully:", response);
@@ -66,7 +66,7 @@ export default function BulkUploader({deviceProfiles}) {
   //   const fetchDeviceProfiles = async () => {
   //     try {
   //       const deviceProfilesRes = await ApiHandler.get(
-  //         "/routers/v1/device-profile"
+  //         "/api/v1/device-profile"
   //       );
   //       const transformedProfiles = deviceProfilesRes.map((profile) => ({
   //         value: profile.id,

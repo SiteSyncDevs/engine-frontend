@@ -69,7 +69,7 @@ export default function CreateDevice() {
       console.log("Fetching device profiles...");
       try {
         const deviceProfilesRes = await ApiHandler.get(
-          "/routers/v1/device-profile"
+          "/api/v1/device-profile"
         );
         const transformedProfiles = deviceProfilesRes.map((profile) => ({
           value: profile.id,

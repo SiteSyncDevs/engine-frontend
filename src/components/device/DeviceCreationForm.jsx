@@ -6,14 +6,19 @@ import ApiHandler from "../../api/ApiHandler";
 import PopupAlert from "../utils/PopupAlert/Popup";
 import TextArea from "../form/TextArea";
 
-export default function DeviceCreationForm({ device, deviceProfiles, errors, scanData }) {
+export default function DeviceCreationForm({ 
+  device = {}, 
+  deviceProfiles = [], 
+  errors = {}, 
+  scanData = "" 
+}) {
   const [selectedDeviceProfile, setSelectedDeviceProfile] = useState(null);
-  const [name, setName] = useState(device.deviceName);
-  const [description, setDescription] = useState();
-  const [dev_eui, setDevEUI] = useState(device.devEUI);
-  const [join_eui, setJoinEUI] = useState(device.appEui);
-  const [app_key, setAppKey] = useState(device.appKey);
-  const [device_profile_id, setDeviceProfile] = useState(device.deviceProfile);
+  const [name, setName] = useState(device?.deviceName || '');
+  const [description, setDescription] = useState('');
+  const [dev_eui, setDevEUI] = useState(device?.devEUI || '');
+  const [join_eui, setJoinEUI] = useState(device?.appEui || '');
+  const [app_key, setAppKey] = useState(device?.appKey || '');
+  const [device_profile_id, setDeviceProfile] = useState(device?.deviceProfile || '');
   const [alert, setAlert] = useState(null);
 
   const handleSubmit = async () => {
@@ -23,15 +28,16 @@ export default function DeviceCreationForm({ device, deviceProfiles, errors, sca
         dev_eui: dev_eui,
         join_eui: join_eui,
         app_key: app_key,
-        device_profile_id: device_profile_id,
+        device_profile_id: selectedDeviceProfile,
         description: description,
       };
-      const data = await ApiHandler.post("/routes/v1/device", apiData);
+      console.log(apiData);
+      const data = await ApiHandler.post("/api/v1/device", apiData);
       console.log("Device Create Form data rep: ", data);
       setAlert({
         type: "success",
         message: "Device Created Successfully."
-      })
+      });
     } catch (error) {
       console.error("Error creating device:", error);
       setAlert({
@@ -60,28 +66,28 @@ export default function DeviceCreationForm({ device, deviceProfiles, errors, sca
           <TextInput
             label="Device Name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setName(e)}
             fullWidth={true}
-            error={errors.deviceName}
+            error={errors?.deviceName}
             helperText="Please enter the device name."
           />
         </div>
-        {/* Dev EUI and Join EUI in a Flex Row */}
+        {/* Dev EUI and Join EUI */}
         <div className="flex flex-col md:flex-row gap-4 w-full md:w-1/3 mb-4">
           <TextInput
             label="Dev EUI"
             value={dev_eui}
-            onChange={(e) => setDevEUI(e.target.value)}
+            onChange={(e) => setDevEUI(e)}
             fullWidth={true}
-            error={errors.devEUI}
+            error={errors?.devEUI}
             helperText="Please enter the Dev EUI."
           />
           <TextInput
             label="Join EUI"
             value={join_eui}
-            onChange={(e) => setJoinEUI(e.target.value)}
+            onChange={(e) => setJoinEUI(e)}
             fullWidth={true}
-            error={errors.appEui}
+            error={errors?.appEui}
             helperText="Please enter the Join EUI."
           />
         </div>
@@ -89,9 +95,9 @@ export default function DeviceCreationForm({ device, deviceProfiles, errors, sca
           <TextInput
             label="App Key"
             value={app_key}
-            onChange={(e) => setAppKey(e.target.value)}
+            onChange={(e) => setAppKey(e)}
             fullWidth={true}
-            error={errors.appKey}
+            error={errors?.appKey}
             helperText="Please enter the App Key."
           />
           <div className="mt-4" />
@@ -103,9 +109,9 @@ export default function DeviceCreationForm({ device, deviceProfiles, errors, sca
               options={deviceProfiles}
               topLabel="Device Profile"
               value={selectedDeviceProfile}
-              onChange={(value) => setSelectedDeviceProfile(value)}
+              onChange={(e) => setSelectedDeviceProfile(e)}
               maxWidth={525}
-              error={errors.deviceProfile}
+              error={errors?.deviceProfile}
               helperText="Please select a device profile."
             />
           )}

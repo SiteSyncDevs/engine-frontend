@@ -60,7 +60,7 @@ export default function DeviceDetail() {
       const fetchDevices = async () => {
         try {
          
-          const data = await ApiHandler.get( `/routers/v1/device/device/${deviceId}`);
+          const data = await ApiHandler.get( `/api/v1/device/device/${deviceId}`);
           console.log("Data:", data);
           setDevice(data);
         } catch (error) {

@@ -12,6 +12,7 @@ import {
   Divider,
   FormControlLabel,
   Switch,
+  CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -19,43 +20,26 @@ export default function OpcUaConnectionCreator() {
   const navigate = useNavigate();
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [useAuthentication, setUseAuthentication] = useState(false);
-  const [friendlyName, setFriendlyName] = useState("");
-  const [discoveryUrl, setDiscoveryUrl] = useState("");
-  const [endpointUrl, setEndpointUrl] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [mqttClientId, setMqttClientId] = useState("");
-  const [securityMode, setSecurityMode] = useState("");
-  const [securityPolicy, setSecurityPolicy] = useState("");
+  const [name, setName] = useState("");
+  const [ipAddress, setIpAddress] = useState("");
+  const [port, setPort] = useState("");
+  const [authType, setAuthType] = useState(""); // Changed from username/password
+  const [serverExtension, setServerExtension] = useState(""); // OPC UA Server Extension
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState(null);
 
-  const securityModeOptions = [
+  const authOptions = [
     { label: "None", value: "none" },
-    { label: "Sign", value: "sign" },
-    { label: "SignAndCrypt", value: "signandcrypt" },
-  ]
-
-  const securityPolicyOptions = [
-    { label: "None", value: "none" },
-    { label: "Basic128Rsa15", value: "Basic128Rsa15" },
-    { label: "Basic256", value: "Basic256" },
-    { label: "Basic256Sha256", value: "Basic256Sha256" },
-    { label: "Aes128_Sha256_RsaOaep", value: "Aes128_Sha256_RsaOaep" },
-    { label: "Aes128_Sha256_RsaPss", value: "Aes128_Sha256_RsaPss" },
-  ]
+    { label: "BasicAuth", value: "basic" },
+    { label: "Certificate", value: "certificate" },
+  ];
 
   const handleSubmit = async () => {
     const newErrors = {};
-
-    if (!friendlyName) newErrors.friendlyName = "Friendly Name is required";
-    if (!discoveryUrl) newErrors.discoveryUrl = "Discovery URL is required";
-    if (!endpointUrl) newErrors.endpointUrl = "Endpoint URL is required";
-    if (useAuthentication) {
-      if (!username) newErrors.username = "Username is required";
-      if (!password) newErrors.password = "Password is required";
-    }
+    if (!name) newErrors.name = "Connection Name is required";
+    if (!ipAddress) newErrors.ipAddress = "IP Address is required";
+    if (!port) newErrors.port = "Port is required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -65,29 +49,30 @@ export default function OpcUaConnectionCreator() {
     setIsLoading(true);
 
     const formData = {
-      friendlyName,
-      discoveryUrl,
-      endpointUrl,
-      useAuthentication,
-      username: useAuthentication ? username : null,
-      password: useAuthentication ? password : null,
-      mqttClientId,
-      securityMode,
-      securityPolicy,
+      ip_address: ipAddress,
+      port: parseInt(port, 10), // Convert port to number
+      auth: {
+        auth_type: useAuthentication ? authType : "none",
+      },
+      protocol: "opcua",
+      isActive: true,
+      name: name,
+      type: "opcua",
+      params: {
+        server_extension: serverExtension,
+      },
     };
 
     try {
-      const response = await ApiHandler.post("/routes/v1/connections", formData);
+      const response = await ApiHandler.post("/api/v1/connections/create/opcua", formData);
       console.log("Response data from OpcUaConnectionCreator: ", response);
-
-      // navigate to status page
       navigate("/connections#");
     } catch (error) {
-      console.error("Failed to create connection to device: ", error);
+      console.error("Failed to create OPC-UA connection: ", error);
       setAlert({
         type: "error",
-        message: "Error Creating Connection. Please Try again."
-      })
+        message: "Error Creating Connection. Please Try again.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -95,135 +80,82 @@ export default function OpcUaConnectionCreator() {
 
   return (
     <Box sx={{ padding: 3 }}>
-
-
       {/* Popup Alert */}
       {alert && (
-        <PopupAlert
-          message={alert.message}
-          type={alert.type}
-          onClose={() => setAlert(null)}
-        />
+        <PopupAlert message={alert.message} type={alert.type} onClose={() => setAlert(null)} />
       )}
 
-      {/* Styled Title */}
       <Typography variant="h4" gutterBottom>
         OPC-UA Connection Creator
       </Typography>
       <Divider sx={{ marginBottom: 3 }} />
 
-      {/* Main Form */}
       <Box display="flex" flexDirection="column" gap={2} maxWidth="600px">
         <TextInput
-          label="Friendly Name"
+          label="Connection Name"
           name="name"
           onChange={(newValue) => {
-            setFriendlyName(newValue);
-            setErrors((prev) => ({ ...prev, friendlyName: "" }));
+            setName(newValue);
+            setErrors((prev) => ({ ...prev, name: "" }));
           }}
-          error={!!errors.friendlyName}
-          helperText={errors.friendlyName}
+          error={!!errors.name}
+          helperText={errors.name}
         />
         <TextInput
-          label="Discovery URL"
-          name="name"
+          label="IP Address"
+          name="ipAddress"
           onChange={(newValue) => {
-            setDiscoveryUrl(newValue);
-            setErrors((prev) => ({ ...prev, discoveryUrl: "" }));
+            setIpAddress(newValue);
+            setErrors((prev) => ({ ...prev, ipAddress: "" }));
           }}
-          error={!!errors.discoveryUrl}
-          helperText={errors.discoveryUrl}
+          error={!!errors.ipAddress}
+          helperText={errors.ipAddress}
         />
         <TextInput
-          label="Endpoint URL"
-          name="name"
+          label="Port"
+          name="port"
+          type="number"
           onChange={(newValue) => {
-            setEndpointUrl(newValue);
-            setErrors((prev) => ({ ...prev, endpointUrl: "" }));
+            setPort(newValue);
+            setErrors((prev) => ({ ...prev, port: "" }));
           }}
-          error={!!errors.endpointUrl}
-          helperText={errors.endpointUrl}
+          error={!!errors.port}
+          helperText={errors.port}
         />
 
         {/* Use Authentication Toggle */}
         <FormControlLabel
-          control={
-            <Switch
-              checked={useAuthentication}
-              onChange={() => setUseAuthentication((prev) => !prev)}
-            />
-          }
+          control={<Switch checked={useAuthentication} onChange={() => setUseAuthentication((prev) => !prev)} />}
           label="Use Authentication"
         />
 
-        {/* Username and Password Fields */}
+        {/* Authentication Type Dropdown */}
         <Collapse in={useAuthentication}>
-          <Box display="flex" flexDirection="column" gap={2}>
+          <Dropdown
+            label="Authentication Type"
+            value={authType}
+            options={authOptions}
+            onChange={(value) => setAuthType(value)}
+          />
+        </Collapse>
+
+        {/* Advanced Settings Toggle */}
+        <Button variant="text" sx={{ marginTop: 2 }} onClick={() => setShowAdvanced((prev) => !prev)}>
+          {showAdvanced ? "Hide Advanced Settings" : "Show Advanced Settings"}
+        </Button>
+
+        {/* Advanced Settings */}
+        <Collapse in={showAdvanced}>
+          <Box mt={2} display="flex" flexDirection="column" gap={2}>
             <TextInput
-              label="Username"
-              name="username"
-              onChange={(newValue) => {
-                setUsername(newValue);
-                setErrors((prev) => ({ ...prev, username: "" }));
-              }}
-              error={!!errors.username}
-              helperText={errors.username}
-            />
-            <TextInput
-              label="Password"
-              type="password"
-              name="password"
-              onChange={(newValue) => {
-                setPassword(newValue);
-                setErrors((prev) => ({ ...prev, password: "" }));
-              }}
-              error={!!errors.password}
-              helperText={errors.password}
+              label="Server Extension"
+              name="serverExtension"
+              onChange={(newValue) => setServerExtension(newValue)}
             />
           </Box>
         </Collapse>
       </Box>
 
-      {/* Advanced Settings Toggle */}
-      <Button
-        variant="text"
-        sx={{ marginTop: 2 }}
-        onClick={() => setShowAdvanced((prev) => !prev)}
-      >
-        {showAdvanced ? "Hide Advanced Settings" : "Show Advanced Settings"}
-      </Button>
-
-      {/* Advanced Settings */}
-      <Collapse in={showAdvanced}>
-        <Box mt={2} display="flex" flexDirection="column" gap={2}>
-          <TextInput
-            label="MQTT Client ID"
-            name="clientId"
-            onChange={(newValue) => {
-              setMqttClientId(newValue);
-            }}
-            fullWidth={false}
-          />
-          <Dropdown
-            label="Security Mode"
-            value={securityMode}
-            options={securityModeOptions}
-            onChange={(value) => {
-              console.log("Selected Value:", value);
-              setSecurityMode(value);
-            }}
-          />
-          <Dropdown
-            label="Security Policy"
-            value={securityPolicy}
-            options={securityPolicyOptions}
-            onChange={(value) => {
-              console.log("Selected Value:", value);
-              setSecurityPolicy(value);
-            }}
-          />
-        </Box>
-      </Collapse>
       <Button
         variant="contained"
         color="primary"
